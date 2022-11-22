@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.0.4
   image_picker: ^0.8.6
+  kakao_flutter_sdk_user: ^1.3.0-beta.4 # 카카오 로그인
 
 dev_dependencies:
   flutter_test:

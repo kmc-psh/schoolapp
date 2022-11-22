@@ -19,8 +19,6 @@ class PageNotifier extends ChangeNotifier{
   void goToOtherPage(String name){
     _currentPage = name;
     notifyListeners();
-
-
   }
 
 }
