@@ -47,6 +47,20 @@ class UserController {
   }
 }
 
+class ImageController {
+  static const String API_ENDPOINT = "http://10.0.2.2:3000/image";
+  addPost(String img) async {
+    await http.post(
+      Uri.parse(API_ENDPOINT),
+      headers: <String, String>{
+        "Content-type": "application/x-www-form-urlencoded"
+      },
+      body: <String, String>{
+        'image': img,
+      },
+    );
+  }
+}
 // _postRequest() async {
 //   http.Response response = await http.post(
 //     Uri.parse(baseUrl),
