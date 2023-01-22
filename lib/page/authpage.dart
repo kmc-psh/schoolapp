@@ -299,8 +299,8 @@ class _AuthWidgetState extends State<AuthWidget> {
                     //   return _tryValidation();
                     // }
                     // _tryValidation();
-                    // Provider.of<PageNotifier>(context, listen: false)
-                    //     .goToOtherPage('StudentPage');
+                    Provider.of<PageNotifier>(context, listen: false)
+                        .goToOtherPage('StudentPage');
 
                   },
                   icon: Icon(

@@ -28,20 +28,24 @@ import 'package:shcoolapp/notifiers/user_notifier.dart';
 
 // }
 
+
 String id = '';
 String password = '';
 
 class UserController {
-  static const String API_ENDPOINT = "http://10.0.2.2:3000/user";
+  // "http://10.0.2.2:3000/user"; 
+  // "http://127.0.0.1:3000/user";
+  static const String API_ENDPOINT = "http://10.0.2.2:3000/user"; 
+
   addPost(String inputId, String inputPw) async {
     await http.post(
-      Uri.parse(API_ENDPOINT),
-      headers: <String, String>{
+      Uri.parse("http://10.0.2.2:3000/user"),
+      headers:<String,String> {
         "Content-type": "application/x-www-form-urlencoded"
       },
       body: <String, String>{
-        'id': inputId,
-        'password': inputPw,
+        "id": inputId,
+        "password": inputPw
       },
     );
   }
@@ -52,10 +56,10 @@ class ImageController {
   addPost(String img) async {
     await http.post(
       Uri.parse(API_ENDPOINT),
-      headers: <String, String>{
+      headers: {
         "Content-type": "application/x-www-form-urlencoded"
       },
-      body: <String, String>{
+      body: {
         'image': img,
       },
     );
