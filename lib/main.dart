@@ -6,8 +6,12 @@ import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/page/loginpage.dart';
 import 'package:shcoolapp/page/studentIDpage.dart';
 import 'package:shcoolapp/provider/pagenotifier.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   KakaoSdk.init(nativeAppKey: 'e8ba66760a6c03e65fc4bc3afe5b905f');
   runApp(MyApp());
 }
