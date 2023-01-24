@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:logger/logger.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 import 'package:provider/provider.dart';
 import '../model/chatting_model.dart';
+import '../provider/chattingProvider.dart';
 
 class ChattingPage extends StatefulWidget {
   const ChattingPage({super.key});
@@ -17,13 +21,44 @@ class _ChattingPageState extends State<ChattingPage> {
   // 애니메이션 키 생성(_animListKey안에 AnimatedListState즉 애니메이션 리스트 안의 상태를 가지고 있다.)
   GlobalKey<AnimatedListState> _animListKey = GlobalKey<AnimatedListState>();
   // 텍스트 전송
-  TextEditingController _textEditingController = TextEditingController();
+  late TextEditingController _textEditingController = TextEditingController();
+
+  // 이벤트 처리를 콜백을 정하여 실행하는 역할 스트림의 리스터는 구독에 대한 참조를 저장할 수 있으며, 이를 통해
+  // 수신한 데이터 흐름을 일시 중지, 재개 또는 취소할 수 있다.
+  late StreamSubscription _streamSubscription;
 
   // 변수 생성
   List<String> _chats = [];
 
+  bool firstLoad = true;
+  // 위젯 생성 시  처음으로 호출되는 메드로, 반드시 super.initState()를 호출해야한다.
+  @override
+  void initState() {
+    _textEditingController = TextEditingController();
+    var p = Provider.of<ChattingProvider>(context, listen: false);
+    _streamSubscription = p.getSnapshot().listen((event) {
+      if (firstLoad) {
+        firstLoad = false;
+        return;
+      }
+      p.addOne(ChattingModel.fromJson(event.dosc[0].data()));
+    });
+    // Future.microtask는 initstate에서 chattingprovider의 load에서 notifyListeners가
+    // 바로 실행되므로 setstate 실행 중 오류가 생기는 경우를 방지해준다.
+    Future.microtask(() => p.load());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _streamSubscription.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var p = Provider.of<ChattingProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('chatting'),
@@ -71,7 +106,10 @@ class _ChattingPageState extends State<ChattingPage> {
                 ),
                 IconButton(
                     onPressed: () {
+                      var text = _textEditingController.text;
                       _handleSubmitted(_textEditingController.text);
+                      // 파이어베이스로 db 보내기
+                      p.send(text);
                     },
                     icon: const Icon(Icons.send))
               ],

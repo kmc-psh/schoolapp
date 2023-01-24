@@ -5,6 +5,7 @@ import 'package:shcoolapp/page/authpage.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/page/loginpage.dart';
 import 'package:shcoolapp/page/studentIDpage.dart';
+import 'package:shcoolapp/provider/chattingProvider.dart';
 import 'package:shcoolapp/provider/pagenotifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,6 +17,7 @@ void main() async {
   runApp(MyApp());
 }
 
+// 기존
 class MyApp extends StatelessWidget {
   //현재 페이지 설정
 
@@ -23,11 +25,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChattingPage(),
+      home: HomePage(),
     );
   }
 }
-    
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (context) => ChattingProvider(), child: ChattingPage());
+  }
+}
+
+
+
 //     return MultiProvider(
 //       providers: [
 //         ChangeNotifierProvider(create: (_) => PageNotifier())
@@ -59,7 +77,7 @@ class MyApp extends StatelessWidget {
 
 //           },
 //         ),
-      
+
 //       ),
 //     );
 //   }
