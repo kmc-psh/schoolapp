@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
+import 'package:shcoolapp/api/user_api.dart';
 import 'package:shcoolapp/provider/board_provider.dart';
 
 class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({Key? key}) : super(key: key);
+  final String id;
+  const AddPostScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   State<AddPostScreen> createState() => _AddPostScreenState();
@@ -16,7 +18,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
   final _contentTextEditController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<BoardProvider>(context);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -51,9 +52,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     filled: true,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12))),
-                onChanged: (inputLoc) {
-                  // location = inputLoc;
-                },
                 maxLines: 1,
               ),
               const SizedBox(
@@ -77,9 +75,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     filled: true,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12))),
-                onChanged: (inputCon) {
-                  // content = inputCon;
-                },
                 maxLines: 5,
               ),
               const SizedBox(
@@ -87,7 +82,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
               ),
               ElevatedButton(
                   onPressed: () {
-                    provider.insertData(_titleTextEditController.text,
+                    var provider =
+                        Provider.of<BoardProvider>(context, listen: false);
+                    provider.insertData(id, _titleTextEditController.text,
                         _contentTextEditController.text);
                   },
                   child: const Text("저장"))

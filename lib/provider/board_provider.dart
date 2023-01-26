@@ -19,10 +19,10 @@ class BoardProvider with ChangeNotifier {
     print(result);
   }
 
-  void insertData(String title, String content) async {
+  void insertData(String id, String title, String content) async {
     try {
       dynamic data = {'title': title, 'location': content};
-      firestore.collection('board').add(data);
+      firestore.collection('board').doc(id).set(data);
     } catch (e) {
       return null;
     }
