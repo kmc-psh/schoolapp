@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shcoolapp/api/user_api.dart';
 import 'package:shcoolapp/kakaoviewmodel.dart';
 import 'package:shcoolapp/page/authpage.dart';
+import 'package:shcoolapp/page/register.dart';
 import 'package:shcoolapp/provider/pagenotifier.dart';
 import 'package:shcoolapp/utils/kakaoutils.dart';
 
@@ -120,8 +121,9 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Provider.of<PageNotifier>(context, listen: false)
-                        .goToOtherPage(AuthPage.pageName);
+                    Navigator.of(context).pushNamed('/register');
+                    // Provider.of<PageNotifier>(context, listen: false)
+                    //     .goToOtherPage(AuthPage.pageName);
                   },
                   child: Text('회원가입'),
                 ),
