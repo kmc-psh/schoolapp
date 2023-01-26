@@ -28,7 +28,7 @@ class _BoardScreenState extends State<BoardScreen> {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => AddPostScreen(id: id)));
           },
-          child: Text('$id'),
+          child: Text(widget.id),
         ),
       ),
     );

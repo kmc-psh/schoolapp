@@ -84,7 +84,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   onPressed: () {
                     var provider =
                         Provider.of<BoardProvider>(context, listen: false);
-                    provider.insertData(id, _titleTextEditController.text,
+                    provider.insertData(
+                        widget.id,
+                        _titleTextEditController.text,
                         _contentTextEditController.text);
                   },
                   child: const Text("저장"))

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shcoolapp/api/user_api.dart';
 import 'package:shcoolapp/kakaoviewmodel.dart';
 import 'package:shcoolapp/page/authpage.dart';
-import 'package:shcoolapp/page/register.dart';
+import 'package:shcoolapp/page/registScreen.dart';
 import 'package:shcoolapp/provider/pagenotifier.dart';
 import 'package:shcoolapp/utils/kakaoutils.dart';
 
