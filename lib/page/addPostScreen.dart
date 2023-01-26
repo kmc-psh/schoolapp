@@ -12,8 +12,8 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  var _titleTextEditController = TextEditingController();
-  var _contentTextEditController = TextEditingController();
+  final _titleTextEditController = TextEditingController();
+  final _contentTextEditController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<BoardProvider>(context);
