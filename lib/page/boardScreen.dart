@@ -25,8 +25,10 @@ class _BoardScreenState extends State<BoardScreen> {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AddPostScreen(id: id)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddPostScreen(id: widget.id)));
           },
           child: Text(widget.id),
         ),
