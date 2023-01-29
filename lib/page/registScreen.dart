@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:shcoolapp/page/boardScreen.dart';
+import 'package:shcoolapp/page/chattingpage.dart';
 
 class ResgisterScreen extends StatefulWidget {
   const ResgisterScreen({Key? key}) : super(key: key);
@@ -95,11 +96,16 @@ class _ResgisterScreenState extends State<ResgisterScreen> {
                       'id': _idTextController.text,
                       'password': _pwTextController.text
                     });
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             BoardScreen(id: _idTextController.text)));
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                BoardScreen(id: _idTextController.text)));
+                                ChattingPage(id: _idTextController.text)));
                   },
                   child: const Text('회원가입'))
             ],

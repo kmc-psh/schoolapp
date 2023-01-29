@@ -8,11 +8,8 @@ class ChatMessage extends StatelessWidget {
 
   // 애니메이션 변수 생성
   final Animation<double> animation;
-
-
-
-
-  const ChatMessage(this.txt, {required this.animation, super.key});
+  final String id;
+  const ChatMessage(this.txt, this.id, {required this.animation, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +17,6 @@ class ChatMessage extends StatelessWidget {
     return Padding(
       // 패딩의 symmetric에는 수평 수직 범위를 지정해준다
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-
 
       child: FadeTransition(
         // 애니메이션이 흐리다가 점차 밝아짐
@@ -31,23 +27,24 @@ class ChatMessage extends StatelessWidget {
           axisAlignment: -1,
           child: Row(
             children: [
-            const CircleAvatar(
-              child: Text('d'),
-            ),
-            const SizedBox(
-              width: 8
+              const CircleAvatar(
+                child: Text('d'),
               ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('id, name',style: TextStyle(fontWeight: FontWeight.bold),),
-                  // txt에 들어있는 정보를 보여준다.
-                  Text(txt)
-                ],
-              ),
-            )
-          ],
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      id,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    // txt에 들어있는 정보를 보여준다.
+                    Text(txt)
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),

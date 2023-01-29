@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
+import 'package:shcoolapp/page/addPostScreen.dart';
 import 'package:shcoolapp/page/authpage.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/page/loginpage.dart';
+import 'package:shcoolapp/page/registScreen.dart';
 import 'package:shcoolapp/page/studentIDpage.dart';
+import 'package:shcoolapp/provider/board_provider.dart';
 import 'package:shcoolapp/provider/chattingProvider.dart';
 import 'package:shcoolapp/provider/pagenotifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,9 +27,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomePage(),
-    );
+    return ChangeNotifierProvider(
+        create: ((context) => ChattingProvider()),
+        child: MaterialApp(
+          routes: {'/register': (context) => ResgisterScreen()},
+          home: HomePage(),
+        ));
   }
 }
 
@@ -39,8 +45,9 @@ class _HomePageState extends State<HomePage> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => ChattingProvider(), child: ChattingPage());
+    return Scaffold(
+      body: ResgisterScreen(),
+    );
   }
 }
 

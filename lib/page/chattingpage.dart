@@ -11,7 +11,8 @@ import '../model/chatting_model.dart';
 import '../provider/chattingProvider.dart';
 
 class ChattingPage extends StatefulWidget {
-  const ChattingPage({super.key});
+  final String id;
+  const ChattingPage({required this.id, super.key});
 
   @override
   State<ChattingPage> createState() => _ChattingPageState();
@@ -122,7 +123,7 @@ class _ChattingPageState extends State<ChattingPage> {
 
   // 위젯을 가지고 오는 메서드 생성
   Widget _buildItem(context, index, animation) {
-    return ChatMessage(_chats[index], animation: animation);
+    return ChatMessage(_chats[index], widget.id, animation: animation);
   }
 
   // 전송 버튼 2가지를 하나로 묶어준다.
