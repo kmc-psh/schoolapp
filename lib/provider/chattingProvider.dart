@@ -8,9 +8,7 @@ class ChattingProvider extends ChangeNotifier {
   // 파이어 베이스와 연동을 하기위해 만들어줌
   static const String CHATTING = 'CHATTING';
 
-  // ChattingProvider(this.pk, this.name);
-  // final String pk;
-  // final String name;
+  ChattingProvider();
 
   // chattingList란 변수를 만들고 ChattingModel.dart에서 가져온다.
   var chattingList = <ChattingModel>[];
@@ -54,9 +52,11 @@ class ChattingProvider extends ChangeNotifier {
   Future send(String text) async {
     var now = DateTime.now().millisecondsSinceEpoch;
     final f = FirebaseFirestore.instance;
-    await f
-        .collection(CHATTING)
-        .doc(now.toString())
-        .set(ChattingModel(text, now).toJson());
+    await f.collection(CHATTING).doc(now.toString()).set(
+          ChattingModel(
+            text,
+            now,
+          ).toJson(),
+        );
   }
 }

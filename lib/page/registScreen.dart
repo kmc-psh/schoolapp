@@ -4,6 +4,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:shcoolapp/page/boardScreen.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
+import 'package:shcoolapp/utils/chatmessage.dart';
 
 class ResgisterScreen extends StatefulWidget {
   const ResgisterScreen({Key? key}) : super(key: key);
@@ -105,7 +106,7 @@ class _ResgisterScreenState extends State<ResgisterScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ChattingPage(id: _idTextController.text)));
+                                ChattingPage(name: _nameTextController.text)));
                   },
                   child: const Text('회원가입'))
             ],

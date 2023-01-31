@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:shcoolapp/page/addPostScreen.dart';
 import 'package:shcoolapp/page/authpage.dart';
+import 'package:shcoolapp/page/calendarpage.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/page/loginpage.dart';
 import 'package:shcoolapp/page/registScreen.dart';
 import 'package:shcoolapp/page/studentIDpage.dart';
+import 'package:shcoolapp/page/todolist_page.dart';
 import 'package:shcoolapp/provider/board_provider.dart';
 import 'package:shcoolapp/provider/chattingProvider.dart';
 import 'package:shcoolapp/provider/pagenotifier.dart';
@@ -17,6 +20,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   KakaoSdk.init(nativeAppKey: 'e8ba66760a6c03e65fc4bc3afe5b905f');
+
+  await initializeDateFormatting();
   runApp(MyApp());
 }
 
@@ -31,25 +36,25 @@ class MyApp extends StatelessWidget {
         create: ((context) => ChattingProvider()),
         child: MaterialApp(
           routes: {'/register': (context) => ResgisterScreen()},
-          home: HomePage(),
+          home: TodoListPage(),
         ));
   }
 }
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
+// class HomePage extends StatefulWidget {
+//   @override
+//   _HomePageState createState() => _HomePageState();
+// }
 
-class _HomePageState extends State<HomePage> {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ResgisterScreen(),
-    );
-  }
-}
+// class _HomePageState extends State<HomePage> {
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: ResgisterScreen(),
+//     );
+//   }
+// }
 
 
 

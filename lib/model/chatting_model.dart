@@ -1,6 +1,9 @@
 class ChattingModel {
   // 도큐먼트에 정보 저장
-  ChattingModel(this.text, this.uploadTime);
+  ChattingModel(
+    this.text,
+    this.uploadTime,
+  );
   final String text;
   final int uploadTime;
 

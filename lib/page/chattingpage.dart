@@ -11,8 +11,8 @@ import '../model/chatting_model.dart';
 import '../provider/chattingProvider.dart';
 
 class ChattingPage extends StatefulWidget {
-  final String id;
-  const ChattingPage({required this.id, super.key});
+  final String name;
+  const ChattingPage({required this.name, super.key});
 
   @override
   State<ChattingPage> createState() => _ChattingPageState();
@@ -27,7 +27,7 @@ class _ChattingPageState extends State<ChattingPage> {
   // 이벤트 처리를 콜백을 정하여 실행하는 역할 스트림의 리스터는 구독에 대한 참조를 저장할 수 있으며, 이를 통해
   // 수신한 데이터 흐름을 일시 중지, 재개 또는 취소할 수 있다.
   late StreamSubscription _streamSubscription;
-
+  // CollectionReference users = FirebaseFirestore.instance.collection('CHATTING');
   // 변수 생성
   List<String> _chats = [];
 
@@ -107,10 +107,13 @@ class _ChattingPageState extends State<ChattingPage> {
                 ),
                 IconButton(
                     onPressed: () {
-                      var text = _textEditingController.text;
+                      // users.add({
+                      //   'name': widget.name,
+                      // });
+                      // var text = _textEditingController.text;
                       _handleSubmitted(_textEditingController.text);
-                      // 파이어베이스로 db 보내기
-                      p.send(text);
+                      // // 파이어베이스로 db 보내기
+                      p.send(_textEditingController.text);
                     },
                     icon: const Icon(Icons.send))
               ],
@@ -123,7 +126,7 @@ class _ChattingPageState extends State<ChattingPage> {
 
   // 위젯을 가지고 오는 메서드 생성
   Widget _buildItem(context, index, animation) {
-    return ChatMessage(_chats[index], widget.id, animation: animation);
+    return ChatMessage(_chats[index], widget.name, animation: animation);
   }
 
   // 전송 버튼 2가지를 하나로 묶어준다.

@@ -8,8 +8,8 @@ class ChatMessage extends StatelessWidget {
 
   // 애니메이션 변수 생성
   final Animation<double> animation;
-  final String id;
-  const ChatMessage(this.txt, this.id, {required this.animation, super.key});
+  final String name;
+  const ChatMessage(this.txt, this.name, {required this.animation, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class ChatMessage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      id,
+                      name,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     // txt에 들어있는 정보를 보여준다.
