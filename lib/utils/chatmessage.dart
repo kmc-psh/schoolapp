@@ -1,15 +1,35 @@
+import 'dart:io';
+
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ChatMessage extends StatelessWidget {
-  // 변수를 txt로 받아와서 이부분을 메시지로 사용
+class ChatMessage extends StatefulWidget {
   final String txt;
 
   // 애니메이션 변수 생성
   final Animation<double> animation;
   final String name;
   const ChatMessage(this.txt, this.name, {required this.animation, super.key});
+
+  @override
+  State<ChatMessage> createState() => _ChatMessageState();
+}
+
+class _ChatMessageState extends State<ChatMessage> {
+  // File? pickedImage;
+
+  // void _pickImage() async {
+  //   final imagePicker = ImagePicker();
+  //   final pickedImageFile = await imagePicker.pickImage(
+  //       source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
+  //   setState(() {
+  //     if (pickedImageFile != null) {
+  //       pickedImage = File(pickedImageFile.path);
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +40,17 @@ class ChatMessage extends StatelessWidget {
 
       child: FadeTransition(
         // 애니메이션이 흐리다가 점차 밝아짐
-        opacity: animation,
+        opacity: widget.animation,
         child: SizeTransition(
           // axisAlignment -1로 설정시 애니메이션이 아래에서 올라온다.
-          sizeFactor: animation,
+          sizeFactor: widget.animation,
           axisAlignment: -1,
           child: Row(
             children: [
-              const CircleAvatar(
-                child: Text('d'),
+              CircleAvatar(
+                // backgroundColor: Colors.blue,
+                // backgroundImage:
+                //     pickedImage != null ? FileImage(pickedImage!) : null,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -36,11 +58,11 @@ class ChatMessage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
+                      widget.name,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     // txt에 들어있는 정보를 보여준다.
-                    Text(txt)
+                    Text(widget.txt)
                   ],
                 ),
               )

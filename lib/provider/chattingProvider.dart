@@ -49,7 +49,7 @@ class ChattingProvider extends ChangeNotifier {
   }
 
   // 파이어 베이스로 db 보내기
-  Future send(String text) async {
+  Future send(String text, String name) async {
     var now = DateTime.now().millisecondsSinceEpoch;
     final f = FirebaseFirestore.instance;
     await f.collection(CHATTING).doc(now.toString()).set(

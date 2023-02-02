@@ -36,25 +36,25 @@ class MyApp extends StatelessWidget {
         create: ((context) => ChattingProvider()),
         child: MaterialApp(
           routes: {'/register': (context) => ResgisterScreen()},
-          home: TodoListPage(),
+          home: HomePage(),
         ));
   }
 }
 
-// class HomePage extends StatefulWidget {
-//   @override
-//   _HomePageState createState() => _HomePageState();
-// }
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
 
-// class _HomePageState extends State<HomePage> {
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: ResgisterScreen(),
-//     );
-//   }
-// }
+class _HomePageState extends State<HomePage> {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ResgisterScreen(),
+    );
+  }
+}
 
 
 

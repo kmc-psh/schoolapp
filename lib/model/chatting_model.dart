@@ -1,3 +1,5 @@
+import 'package:shcoolapp/page/chattingpage.dart';
+
 class ChattingModel {
   // 도큐먼트에 정보 저장
   ChattingModel(

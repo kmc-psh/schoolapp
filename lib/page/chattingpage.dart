@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 import 'package:provider/provider.dart';
@@ -27,12 +29,26 @@ class _ChattingPageState extends State<ChattingPage> {
   // 이벤트 처리를 콜백을 정하여 실행하는 역할 스트림의 리스터는 구독에 대한 참조를 저장할 수 있으며, 이를 통해
   // 수신한 데이터 흐름을 일시 중지, 재개 또는 취소할 수 있다.
   late StreamSubscription _streamSubscription;
-  // CollectionReference users = FirebaseFirestore.instance.collection('CHATTING');
+  CollectionReference users = FirebaseFirestore.instance.collection('CHATTING');
   // 변수 생성
   List<String> _chats = [];
 
   bool firstLoad = true;
   // 위젯 생성 시  처음으로 호출되는 메드로, 반드시 super.initState()를 호출해야한다.
+
+  File? pickedImage;
+
+  void _pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImageFile = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
+    setState(() {
+      if (pickedImageFile != null) {
+        pickedImage = File(pickedImageFile.path);
+      }
+    });
+  }
+
   @override
   void initState() {
     _textEditingController = TextEditingController();
@@ -63,6 +79,31 @@ class _ChattingPageState extends State<ChattingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('chatting'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        title: const Text('이미지 설정하기'),
+                        actions: [
+                          Column(
+                            children: [
+                              OutlinedButton.icon(
+                                  onPressed: () {
+                                    _pickImage();
+                                  },
+                                  icon: const Icon(Icons.image),
+                                  label: const Text('사진 추가하기'))
+                            ],
+                          )
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(Icons.settings))
+        ],
       ),
       body: Column(
         children: [
@@ -107,13 +148,15 @@ class _ChattingPageState extends State<ChattingPage> {
                 ),
                 IconButton(
                     onPressed: () {
-                      // users.add({
-                      //   'name': widget.name,
-                      // });
+                      users.add({
+                        'name': widget.name,
+                        'text': _textEditingController.text,
+                        'uploadtime': DateTime.now(),
+                      });
                       // var text = _textEditingController.text;
                       _handleSubmitted(_textEditingController.text);
                       // // 파이어베이스로 db 보내기
-                      p.send(_textEditingController.text);
+                      // p.send(text, widget.name);
                     },
                     icon: const Icon(Icons.send))
               ],
