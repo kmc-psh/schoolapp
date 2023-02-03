@@ -11,7 +11,9 @@ class ChatMessage extends StatefulWidget {
   // 애니메이션 변수 생성
   final Animation<double> animation;
   final String name;
-  const ChatMessage(this.txt, this.name, {required this.animation, super.key});
+  File? pickedImage;
+  ChatMessage(this.txt, this.name, this.pickedImage,
+      {required this.animation, super.key});
 
   @override
   State<ChatMessage> createState() => _ChatMessageState();
@@ -48,9 +50,10 @@ class _ChatMessageState extends State<ChatMessage> {
           child: Row(
             children: [
               CircleAvatar(
-                // backgroundColor: Colors.blue,
-                // backgroundImage:
-                //     pickedImage != null ? FileImage(pickedImage!) : null,
+                backgroundColor: Colors.blue,
+                backgroundImage: widget.pickedImage != null
+                    ? FileImage(widget.pickedImage!)
+                    : null,
               ),
               const SizedBox(width: 8),
               Expanded(

@@ -35,18 +35,19 @@ class _ChattingPageState extends State<ChattingPage> {
 
   bool firstLoad = true;
   // 위젯 생성 시  처음으로 호출되는 메드로, 반드시 super.initState()를 호출해야한다.
+  File? _pickedImage;
+  File? get pickedImage => _pickedImage;
 
-  File? pickedImage;
-
-  void _pickImage() async {
+  Future<File?> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedImageFile = await imagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
     setState(() {
       if (pickedImageFile != null) {
-        pickedImage = File(pickedImageFile.path);
+        _pickedImage = File(pickedImageFile.path);
       }
     });
+    return _pickedImage;
   }
 
   @override
@@ -169,7 +170,8 @@ class _ChattingPageState extends State<ChattingPage> {
 
   // 위젯을 가지고 오는 메서드 생성
   Widget _buildItem(context, index, animation) {
-    return ChatMessage(_chats[index], widget.name, animation: animation);
+    return ChatMessage(_chats[index], widget.name, pickedImage,
+        animation: animation);
   }
 
   // 전송 버튼 2가지를 하나로 묶어준다.
