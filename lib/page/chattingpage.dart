@@ -7,10 +7,14 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
+import 'package:shcoolapp/api/user_api.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import '../model/chatting_model.dart';
 import '../provider/chattingProvider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChattingPage extends StatefulWidget {
   final String name;
@@ -38,6 +42,8 @@ class _ChattingPageState extends State<ChattingPage> {
   File? _pickedImage;
   File? get pickedImage => _pickedImage;
 
+  var pk = const Uuid().v1();
+
   Future<File?> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedImageFile = await imagePicker.pickImage(
@@ -53,7 +59,9 @@ class _ChattingPageState extends State<ChattingPage> {
   @override
   void initState() {
     _textEditingController = TextEditingController();
+
     var p = Provider.of<ChattingProvider>(context, listen: false);
+
     _streamSubscription = p.getSnapshot().listen((event) {
       if (firstLoad) {
         firstLoad = false;
@@ -122,7 +130,7 @@ class _ChattingPageState extends State<ChattingPage> {
             // 아이템 빌더에서 모든 파라미터를 _buildItem으로 던져준다.
             itemBuilder: _buildItem,
           )),
-          Divider(
+          const Divider(
             thickness: 0.5,
             height: 3,
             color: Colors.grey,
@@ -148,16 +156,21 @@ class _ChattingPageState extends State<ChattingPage> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       users.add({
                         'name': widget.name,
                         'text': _textEditingController.text,
                         'uploadtime': DateTime.now(),
+                        'pk': pk,
                       });
                       // var text = _textEditingController.text;
                       _handleSubmitted(_textEditingController.text);
-                      // // 파이어베이스로 db 보내기
-                      // p.send(text, widget.name);
+
+                      // var result = await FirebaseFirestore.instance
+                      //     .collection("CHATTING")
+                      //     .doc("id")
+                      //     .get();
+                      // print(result);
                     },
                     icon: const Icon(Icons.send))
               ],
@@ -170,8 +183,12 @@ class _ChattingPageState extends State<ChattingPage> {
 
   // 위젯을 가지고 오는 메서드 생성
   Widget _buildItem(context, index, animation) {
-    return ChatMessage(_chats[index], widget.name, pickedImage,
-        animation: animation);
+    return ChatMessage(
+      _chats[index],
+      widget.name,
+      pickedImage,
+      animation: animation,
+    );
   }
 
   // 전송 버튼 2가지를 하나로 묶어준다.
