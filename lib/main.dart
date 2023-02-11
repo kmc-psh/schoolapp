@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shcoolapp/page/addPostScreen.dart';
 import 'package:shcoolapp/page/authpage.dart';
 import 'package:shcoolapp/page/calendarpage.dart';
+import 'package:shcoolapp/page/chatting_room.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/page/loginpage.dart';
 import 'package:shcoolapp/page/registScreen.dart';
@@ -35,27 +36,31 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: ((context) => ChattingProvider()),
         child: MaterialApp(
-          routes: {'/register': (context) => ResgisterScreen()},
-          home: HomePage(),
-        ));
+            routes: {'/register': (context) => ResgisterScreen()},
+            home: ChattingRoom(
+              room: '',
+              name: '',
+            )));
   }
 }
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
 
-class _HomePageState extends State<HomePage> {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ResgisterScreen(),
-    );
-  }
-}
+// ------------------------------------------------------------
+// class HomePage extends StatefulWidget {
+//   @override
+//   _HomePageState createState() => _HomePageState();
+// }
 
+// class _HomePageState extends State<HomePage> {
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: ResgisterScreen(),
+//     );
+//   }
+// }
+// ------------------------------------------------------------
 
 
 //     return MultiProvider(

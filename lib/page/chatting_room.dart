@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shcoolapp/%08widgets/chattingroom_item.dart';
+import 'package:shcoolapp/page/chattingpage.dart';
 
 class ChattingRoom extends StatefulWidget {
-  const ChattingRoom({super.key});
+  final String name;
+  String room = '';
+
+  ChattingRoom({required this.room, required this.name, super.key});
 
   @override
   State<ChattingRoom> createState() => _ChattingRoomState();
 }
 
 class _ChattingRoomState extends State<ChattingRoom> {
-  String room = '';
   List<ChattingRoomItems> roomName = [];
 
   @override
@@ -33,7 +36,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
                               onChanged: (value) {
                                 setState(
                                   () {
-                                    room = value;
+                                    widget.room = value;
                                   },
                                 );
                               },
@@ -48,11 +51,11 @@ class _ChattingRoomState extends State<ChattingRoom> {
                               Navigator.of(context).pop();
                               setState(() {
                                 roomName.add(
-                                  ChattingRoomItems(room: room),
+                                  ChattingRoomItems(room: widget.room),
                                 );
                                 Future<DocumentReference<Map<String, dynamic>>>
                                     users = FirebaseFirestore.instance
-                                        .collection(room)
+                                        .collection(widget.room)
                                         .add({});
                               });
                             },
@@ -71,7 +74,13 @@ class _ChattingRoomState extends State<ChattingRoom> {
             child: ListTile(
               title: Text(roomName[index].room),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ChattingPage(name: widget.name, room: widget.room)));
+            },
           );
         }),
         itemCount: roomName.length,

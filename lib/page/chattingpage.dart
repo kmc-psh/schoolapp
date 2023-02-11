@@ -13,12 +13,14 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../model/chatting_model.dart';
 import '../provider/chattingProvider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChattingPage extends StatefulWidget {
   final String name;
-  const ChattingPage({required this.name, super.key});
+  String room;
+
+  ChattingPage({required this.name, required this.room, super.key});
 
   @override
   State<ChattingPage> createState() => _ChattingPageState();
@@ -33,7 +35,8 @@ class _ChattingPageState extends State<ChattingPage> {
   // 이벤트 처리를 콜백을 정하여 실행하는 역할 스트림의 리스터는 구독에 대한 참조를 저장할 수 있으며, 이를 통해
   // 수신한 데이터 흐름을 일시 중지, 재개 또는 취소할 수 있다.
   late StreamSubscription _streamSubscription;
-  CollectionReference users = FirebaseFirestore.instance.collection('CHATTING');
+  // CollectionReference users = FirebaseFirestore.instance.collection(widget.room);
+
   // 변수 생성
   List<String> _chats = [];
 
@@ -41,8 +44,6 @@ class _ChattingPageState extends State<ChattingPage> {
   // 위젯 생성 시  처음으로 호출되는 메드로, 반드시 super.initState()를 호출해야한다.
   File? _pickedImage;
   File? get pickedImage => _pickedImage;
-
-  var pk = const Uuid().v1();
 
   Future<File?> _pickImage() async {
     final imagePicker = ImagePicker();
@@ -84,7 +85,9 @@ class _ChattingPageState extends State<ChattingPage> {
 
   @override
   Widget build(BuildContext context) {
+    var pk = Uuid().v1();
     var p = Provider.of<ChattingProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('chatting'),
@@ -157,12 +160,16 @@ class _ChattingPageState extends State<ChattingPage> {
                 ),
                 IconButton(
                     onPressed: () async {
-                      users.add({
+                      Future<DocumentReference<Map<String, dynamic>>> users =
+                          FirebaseFirestore.instance
+                              .collection(widget.room)
+                              .add({
                         'name': widget.name,
                         'text': _textEditingController.text,
                         'uploadtime': DateTime.now(),
                         'pk': pk,
                       });
+
                       // var text = _textEditingController.text;
                       _handleSubmitted(_textEditingController.text);
 

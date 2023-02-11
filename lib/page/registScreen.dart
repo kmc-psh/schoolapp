@@ -105,8 +105,10 @@ class _ResgisterScreenState extends State<ResgisterScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                ChattingPage(name: _nameTextController.text)));
+                            builder: (context) => ChattingPage(
+                                  name: _nameTextController.text,
+                                  room: '',
+                                )));
                   },
                   child: const Text('회원가입'))
             ],

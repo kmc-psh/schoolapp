@@ -4,6 +4,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:shcoolapp/provider/chattingProvider.dart';
 
 class ChatMessage extends StatefulWidget {
   final String txt;
@@ -12,6 +14,7 @@ class ChatMessage extends StatefulWidget {
   final Animation<double> animation;
   final String name;
   File? pickedImage;
+
   ChatMessage(this.txt, this.name, this.pickedImage,
       {required this.animation, super.key});
 
@@ -20,19 +23,6 @@ class ChatMessage extends StatefulWidget {
 }
 
 class _ChatMessageState extends State<ChatMessage> {
-  // File? pickedImage;
-
-  // void _pickImage() async {
-  //   final imagePicker = ImagePicker();
-  //   final pickedImageFile = await imagePicker.pickImage(
-  //       source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
-  //   setState(() {
-  //     if (pickedImageFile != null) {
-  //       pickedImage = File(pickedImageFile.path);
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     // 로우로 묶어주고 로우안에 컬럼을 넣어준다.
@@ -48,6 +38,9 @@ class _ChatMessageState extends State<ChatMessage> {
           sizeFactor: widget.animation,
           axisAlignment: -1,
           child: Row(
+            mainAxisAlignment: widget.name == widget.name
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             children: [
               CircleAvatar(
                 backgroundColor: Colors.blue,
@@ -56,19 +49,16 @@ class _ChatMessageState extends State<ChatMessage> {
                     : null,
               ),
               const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    // txt에 들어있는 정보를 보여준다.
-                    Text(widget.txt)
-                  ],
-                ),
-              )
+              Column(
+                children: [
+                  Text(
+                    widget.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  // txt에 들어있는 정보를 보여준다.
+                  Text(widget.txt)
+                ],
+              ),
             ],
           ),
         ),
