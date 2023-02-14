@@ -18,9 +18,14 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController _textEditingController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chatting Room'),
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.search),
+        ),
         actions: [
           IconButton(
               onPressed: () {
@@ -33,13 +38,15 @@ class _ChattingRoomState extends State<ChattingRoom> {
                         Column(
                           children: [
                             TextField(
-                              onChanged: (value) {
-                                setState(
-                                  () {
-                                    widget.room = value;
-                                  },
-                                );
-                              },
+                              controller: _textEditingController,
+                              // onChanged: (value) {
+                              //   setState(
+                              //     () {
+                              //       widget.room = value;
+                              //     },
+                              //   );
+                              // },
+
                               decoration: const InputDecoration(
                                   hintText: '방 이름을 정해주세요'),
                             ),
@@ -51,11 +58,12 @@ class _ChattingRoomState extends State<ChattingRoom> {
                               Navigator.of(context).pop();
                               setState(() {
                                 roomName.add(
-                                  ChattingRoomItems(room: widget.room),
+                                  ChattingRoomItems(
+                                      room: _textEditingController.text),
                                 );
                                 Future<DocumentReference<Map<String, dynamic>>>
                                     users = FirebaseFirestore.instance
-                                        .collection(widget.room)
+                                        .collection(_textEditingController.text)
                                         .add({});
                               });
                             },
@@ -71,8 +79,25 @@ class _ChattingRoomState extends State<ChattingRoom> {
       body: ListView.builder(
         itemBuilder: ((_, index) {
           return InkWell(
-            child: ListTile(
-              title: Text(roomName[index].room),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: Text(
+                      roomName[index].room,
+                      style: const TextStyle(
+                          fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        roomName.removeAt(index);
+                      });
+                    },
+                    icon: const Icon(Icons.delete))
+              ],
             ),
             onTap: () {
               Navigator.push(
