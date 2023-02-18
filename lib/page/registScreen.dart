@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:shcoolapp/page/boardScreen.dart';
+import 'package:shcoolapp/page/chatting_room.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 
@@ -102,13 +103,18 @@ class _ResgisterScreenState extends State<ResgisterScreen> {
                     //     MaterialPageRoute(
                     //         builder: (context) =>
                     //             BoardScreen(id: _idTextController.text)));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => ChattingPage(
+                    //               name: _nameTextController.text,
+                    //               room: '',
+                    //             )));
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ChattingPage(
-                                  name: _nameTextController.text,
-                                  room: '',
-                                )));
+                            builder: (context) => ChattingRoom(
+                                room: '', name: _nameTextController.text)));
                   },
                   child: const Text('회원가입'))
             ],
