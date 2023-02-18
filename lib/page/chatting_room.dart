@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shcoolapp/%08widgets/chattingroom_item.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
+import 'package:shcoolapp/test.dart';
 
 class ChattingRoom extends StatefulWidget {
   final String name;
@@ -38,14 +39,14 @@ class _ChattingRoomState extends State<ChattingRoom> {
                         Column(
                           children: [
                             TextField(
-                              controller: _textEditingController,
-                              // onChanged: (value) {
-                              //   setState(
-                              //     () {
-                              //       widget.room = value;
-                              //     },
-                              //   );
-                              // },
+                              // controller: _textEditingController,
+                              onChanged: (value) {
+                                setState(
+                                  () {
+                                    widget.room = value;
+                                  },
+                                );
+                              },
 
                               decoration: const InputDecoration(
                                   hintText: '방 이름을 정해주세요'),
@@ -58,13 +59,13 @@ class _ChattingRoomState extends State<ChattingRoom> {
                               Navigator.of(context).pop();
                               setState(() {
                                 roomName.add(
-                                  ChattingRoomItems(
-                                      room: _textEditingController.text),
+                                  ChattingRoomItems(room: widget.room),
                                 );
-                                Future<DocumentReference<Map<String, dynamic>>>
-                                    users = FirebaseFirestore.instance
-                                        .collection(_textEditingController.text)
-                                        .add({});
+                                FirebaseFirestore.instance
+                                    .collection('chat')
+                                    .doc(
+                                        'name: ${widget.name}, room: ${widget.room}')
+                                    .set({'RoomName': widget.room});
                               });
                             },
                             icon: const Icon(Icons.add_box))
@@ -76,40 +77,58 @@ class _ChattingRoomState extends State<ChattingRoom> {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: ListView.builder(
-        itemBuilder: ((_, index) {
-          return InkWell(
-            child: Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: Text(
-                      roomName[index].room,
-                      style: const TextStyle(
-                          fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('chat').snapshots(),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            final chatDocs = snapshot.data!.docs;
+            return ListView.builder(
+              itemBuilder: ((context, index) {
+                return InkWell(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          title: Text(
+                            // roomName[index].room,
+                            snapshot.data!.docs[index]['RoomName'],
+                            style: const TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              roomName.removeAt(index);
+                            });
+                          },
+                          icon: const Icon(Icons.delete))
+                    ],
                   ),
-                ),
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        roomName.removeAt(index);
-                      });
-                    },
-                    icon: const Icon(Icons.delete))
-              ],
-            ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ChattingPage(name: widget.name, room: widget.room)));
-            },
-          );
-        }),
-        itemCount: roomName.length,
-      ),
+                  onTap: () {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             ChattingPage(name: widget.name, room: widget.room)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatMain(
+                                  room: roomName[index].room,
+                                  name: widget.name,
+                                )));
+                  },
+                );
+              }),
+              itemCount: chatDocs.length,
+            );
+          })),
     );
   }
 }

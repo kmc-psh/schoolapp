@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
+import 'package:shcoolapp/controller/kakao_controller.dart';
 import 'package:shcoolapp/page/addPostScreen.dart';
 import 'package:shcoolapp/page/authpage.dart';
 import 'package:shcoolapp/page/calendarpage.dart';
@@ -33,14 +34,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: ((context) => ChattingProvider()),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: ((context) => ChattingProvider()),
+          ),
+          ChangeNotifierProvider(create: (context) => LoginProvider())
+        ],
         child: MaterialApp(
             routes: {'/register': (context) => ResgisterScreen()},
-            home: ChattingRoom(
-              room: '',
-              name: '',
-            )));
+            home: ResgisterScreen()));
   }
 }
 
