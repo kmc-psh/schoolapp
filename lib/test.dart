@@ -44,7 +44,7 @@ class MessageText extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('chat')
-          .doc(name)
+          .doc('name: $name, room: $room')
           .collection('RoomName')
           .doc(room)
           .collection('message')
@@ -106,7 +106,7 @@ class _SendMessageState extends State<SendMessage> {
               onPressed: () {
                 FirebaseFirestore.instance
                     .collection('chat')
-                    .doc(widget.name)
+                    .doc('name: ${widget.name}, room: ${widget.room}')
                     .collection('RoomName')
                     .doc(widget.room)
                     .collection('message')

@@ -63,9 +63,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
                                 );
                                 FirebaseFirestore.instance
                                     .collection('chat')
-                                    .doc(widget.name)
-                                    .collection('RoomName')
-                                    .doc(widget.room)
+                                    .doc(
+                                        'name: ${widget.name}, room: ${widget.room}')
                                     .set({'RoomName': widget.room});
                               });
                             },
@@ -79,11 +78,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('chat')
-              .doc(widget.name)
-              .collection('RoomName')
-              .snapshots(),
+          stream: FirebaseFirestore.instance.collection('chat').snapshots(),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
