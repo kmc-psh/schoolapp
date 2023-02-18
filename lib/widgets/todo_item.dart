@@ -1,6 +1,6 @@
 class TodoItems {
-  final String title;
-  final String task;
+  String title;
+  bool isDone;
 
-  TodoItems({required this.title, required this.task});
+  TodoItems(this.title, {this.isDone = false});
 }
