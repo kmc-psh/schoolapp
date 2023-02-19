@@ -1,5 +1,5 @@
 class ChattingRoomItems {
-  final String room;
+  final String? room;
 
   ChattingRoomItems({required this.room});
 }

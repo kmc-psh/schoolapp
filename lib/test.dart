@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 
 class ChatMain extends StatefulWidget {
-  ChatMain({required this.room, required this.name, super.key});
+  ChatMain(
+      {required this.room, required this.name, required this.test, super.key});
   var room;
-  String name;
+  String? name;
+  String? test;
   @override
   State<ChatMain> createState() => _ChatMainState();
 }
@@ -21,11 +23,13 @@ class _ChatMainState extends State<ChatMain> {
               child: MessageText(
                 room: widget.room,
                 name: widget.name,
+                test: widget.test,
               ),
             ),
             SendMessage(
               room: widget.room,
               name: widget.name,
+              test: widget.test,
             ),
           ],
         ),
@@ -35,16 +39,18 @@ class _ChatMainState extends State<ChatMain> {
 }
 
 class MessageText extends StatelessWidget {
-  MessageText({required this.room, required this.name, super.key});
+  MessageText(
+      {required this.room, required this.name, required this.test, super.key});
   var room;
-  String name;
+  String? name;
+  String? test;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('chat')
-          .doc('name: $name, room: $room')
+          .doc('name: $test, room: $room')
           .collection('RoomName')
           .doc(room)
           .collection('message')
@@ -63,7 +69,7 @@ class MessageText extends StatelessWidget {
           reverse: true,
           itemCount: chatDocs.length,
           itemBuilder: (context, index) {
-            return TestWdiget(name, snapshot.data!.docs[index]['name'],
+            return TestWdiget(snapshot.data!.docs[index]['name'], name,
                 snapshot.data!.docs[index]['text']);
           },
         );
@@ -73,9 +79,11 @@ class MessageText extends StatelessWidget {
 }
 
 class SendMessage extends StatefulWidget {
-  SendMessage({required this.room, required this.name, super.key});
+  SendMessage(
+      {required this.room, required this.name, required this.test, super.key});
   var room;
-  String name;
+  String? name;
+  String? test;
 
   @override
   State<SendMessage> createState() => _SendMessageState();
@@ -106,7 +114,7 @@ class _SendMessageState extends State<SendMessage> {
               onPressed: () {
                 FirebaseFirestore.instance
                     .collection('chat')
-                    .doc('name: ${widget.name}, room: ${widget.room}')
+                    .doc('name: ${widget.test}, room: ${widget.room}')
                     .collection('RoomName')
                     .doc(widget.room)
                     .collection('message')
@@ -124,7 +132,7 @@ class _SendMessageState extends State<SendMessage> {
   }
 }
 
-Widget TestWdiget(String name, String _name, String text) {
+Widget TestWdiget(String? name, String? _name, String text) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Row(
@@ -141,7 +149,7 @@ Widget TestWdiget(String name, String _name, String text) {
         Column(
           children: [
             Text(
-              name,
+              name!,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             // txt에 들어있는 정보를 보여준다.

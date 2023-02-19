@@ -5,8 +5,8 @@ import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/test.dart';
 
 class ChattingRoom extends StatefulWidget {
-  final String name;
-  String room = '';
+  final String? name;
+  String? room = '';
 
   ChattingRoom({required this.room, required this.name, super.key});
 
@@ -65,7 +65,10 @@ class _ChattingRoomState extends State<ChattingRoom> {
                                     .collection('chat')
                                     .doc(
                                         'name: ${widget.name}, room: ${widget.room}')
-                                    .set({'RoomName': widget.room});
+                                    .set({
+                                  'RoomName': widget.room,
+                                  'name': widget.name
+                                });
                               });
                             },
                             icon: const Icon(Icons.add_box))
@@ -120,8 +123,9 @@ class _ChattingRoomState extends State<ChattingRoom> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatMain(
-                                  room: roomName[index].room,
+                                  room: snapshot.data!.docs[index]['RoomName'],
                                   name: widget.name,
+                                  test: snapshot.data!.docs[index]['name'],
                                 )));
                   },
                 );
