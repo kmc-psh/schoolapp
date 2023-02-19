@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shcoolapp/%08widgets/todo_item.dart';
-import 'package:shcoolapp/page/calendarpage.dart';
 
 class TodoPage extends StatefulWidget {
   @override
@@ -21,39 +20,47 @@ class _TodoPageState extends State<TodoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('남은 할 일'),
+        title: const Text('Todo-List'),
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CalendarPage()));
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        title: const Text('할 일'),
+                        actions: [
+                          Column(
+                            children: [
+                              TextField(
+                                controller: _todoController,
+                                decoration: const InputDecoration(
+                                    hintText: ('할 일을 입력하세요')),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                              alignment: Alignment.bottomRight,
+                              onPressed: () =>
+                                  _addTodo(TodoItems(_todoController.text)),
+                              icon: const Icon(Icons.add_box_outlined))
+                        ],
+                      );
+                    });
               },
-              icon: Icon(Icons.fork_right))
+              icon: const Icon(Icons.add))
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _todoController,
-                  ),
-                ),
-                ElevatedButton(
-                  child: Text('추가'),
-                  onPressed: () => _addTodo(TodoItems(_todoController.text)),
-                ),
-              ],
-            ),
+          children: [
             StreamBuilder<QuerySnapshot>(
                 stream:
                     FirebaseFirestore.instance.collection('todo').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                   final documents = snapshot.data!.docs;
                   return Expanded(
@@ -75,14 +82,14 @@ class _TodoPageState extends State<TodoPage> {
       title: Text(
         todo.title,
         style: todo.isDone
-            ? TextStyle(
+            ? const TextStyle(
                 decoration: TextDecoration.lineThrough,
                 fontStyle: FontStyle.italic,
               )
             : null,
       ),
       trailing: IconButton(
-        icon: Icon(Icons.delete_forever),
+        icon: const Icon(Icons.delete_forever),
         onPressed: () => _deleteTodo(snapshot),
       ),
       onTap: () => _toggleTodo(snapshot),
@@ -109,10 +116,3 @@ class _TodoPageState extends State<TodoPage> {
         .update({'isDone': !snapshot['isDone']});
   }
 }
-
-// void _deleteTodo(DocumentSnapshot snapshot) {
-//   FirebaseFirestore.instance
-//       .collection('todo')
-//       .doc(snapshot.documentID)
-//       .delete();
-// }
