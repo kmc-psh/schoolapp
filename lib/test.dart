@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 
 class ChatMain extends StatefulWidget {
@@ -132,6 +133,21 @@ class _SendMessageState extends State<SendMessage> {
   }
 }
 
+// File? _pickedImage;
+// File? get pickedImage => _pickedImage;
+
+// Future<File?> _pickImage() async {
+//   final imagePicker = ImagePicker();
+//   final pickedImageFile = await imagePicker.pickImage(
+//       source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
+//   setState(() {
+//     if (pickedImageFile != null) {
+//       _pickedImage = File(pickedImageFile.path);
+//     }
+//   });
+//   return _pickedImage;
+// }
+
 Widget TestWdiget(String? name, String? _name, String text) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -147,6 +163,7 @@ Widget TestWdiget(String? name, String? _name, String text) {
         ),
         const SizedBox(width: 8),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               name!,
