@@ -8,6 +8,7 @@ import 'package:shcoolapp/page/authpage.dart';
 import 'package:shcoolapp/page/calendarpage.dart';
 import 'package:shcoolapp/page/chatting_room.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
+import 'package:shcoolapp/page/kakao_loginScreen.dart';
 import 'package:shcoolapp/page/loginpage.dart';
 import 'package:shcoolapp/page/registScreen.dart';
 import 'package:shcoolapp/page/studentIDpage.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
             routes: {'/register': (context) => ResgisterScreen()},
-            home: ResgisterScreen()));
+            home: KakaoLoginScreen()));
   }
 }
 
