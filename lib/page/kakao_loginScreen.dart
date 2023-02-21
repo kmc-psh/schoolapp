@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shcoolapp/controller/kakao_controller.dart';
+import 'package:shcoolapp/page/chatting_room.dart';
 
 class KakaoLoginScreen extends StatefulWidget {
   const KakaoLoginScreen({super.key});
@@ -18,8 +19,12 @@ class _KakaoLoginScreenState extends State<KakaoLoginScreen> {
           onPressed: () async {
             var provider = LoginProvider();
             String? name = await provider.kakaoLogin();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChattingRoom(room: '', name: name)));
           },
-          child: Image.asset(''),
+          child: Text('kakao login'),
         ),
       ),
     );
