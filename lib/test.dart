@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,9 +16,51 @@ class ChatMain extends StatefulWidget {
 }
 
 class _ChatMainState extends State<ChatMain> {
+  File? _pickedImage;
+  File? get pickedImage => _pickedImage;
+
+  Future<File?> _pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImageFile = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
+    setState(() {
+      if (pickedImageFile != null) {
+        _pickedImage = File(pickedImageFile.path);
+      }
+    });
+    return _pickedImage;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        title: const Text('이미지 설정하기'),
+                        actions: [
+                          Column(
+                            children: [
+                              OutlinedButton.icon(
+                                  onPressed: () {
+                                    _pickImage();
+                                  },
+                                  icon: const Icon(Icons.image),
+                                  label: const Text('사진 추가하기'))
+                            ],
+                          )
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(Icons.settings))
+        ],
+      ),
       body: Container(
         child: Column(
           children: [
@@ -132,21 +176,6 @@ class _SendMessageState extends State<SendMessage> {
     );
   }
 }
-
-// File? _pickedImage;
-// File? get pickedImage => _pickedImage;
-
-// Future<File?> _pickImage() async {
-//   final imagePicker = ImagePicker();
-//   final pickedImageFile = await imagePicker.pickImage(
-//       source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
-//   setState(() {
-//     if (pickedImageFile != null) {
-//       _pickedImage = File(pickedImageFile.path);
-//     }
-//   });
-//   return _pickedImage;
-// }
 
 Widget TestWdiget(String? name, String? _name, String text) {
   return Padding(
