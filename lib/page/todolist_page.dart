@@ -20,7 +20,12 @@ class _TodoPageState extends State<TodoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo-List'),
+        centerTitle: true,
+        title: const Text(
+          'Todo-List',
+          style: TextStyle(fontFamily: 'salt', fontSize: 30),
+        ),
+        backgroundColor: Colors.black,
         actions: [
           IconButton(
               onPressed: () {
@@ -28,14 +33,19 @@ class _TodoPageState extends State<TodoPage> {
                     context: context,
                     builder: (_) {
                       return AlertDialog(
-                        title: const Text('할 일'),
+                        title: const Text(
+                          '할 일',
+                          style: TextStyle(fontFamily: 'salt', fontSize: 30),
+                        ),
                         actions: [
                           Column(
                             children: [
                               TextField(
                                 controller: _todoController,
                                 decoration: const InputDecoration(
-                                    hintText: ('할 일을 입력하세요')),
+                                    hintText: ('할 일을 입력하세요'),
+                                    hintStyle: TextStyle(
+                                        fontFamily: 'salt', fontSize: 20)),
                               ),
                             ],
                           ),
@@ -77,16 +87,19 @@ class _TodoPageState extends State<TodoPage> {
   }
 
   Widget _buildItem(DocumentSnapshot snapshot) {
-    final todo = TodoItems(snapshot['title'], isDone: snapshot['isDone']);
+    final todo = TodoItems(
+      snapshot['title'],
+      isDone: snapshot['isDone'],
+    );
     return ListTile(
       title: Text(
         todo.title,
         style: todo.isDone
             ? const TextStyle(
                 decoration: TextDecoration.lineThrough,
-                fontStyle: FontStyle.italic,
-              )
-            : null,
+                fontFamily: 'salt',
+                fontSize: 30)
+            : const TextStyle(fontFamily: 'salt', fontSize: 30),
       ),
       trailing: IconButton(
         icon: const Icon(Icons.delete_forever),

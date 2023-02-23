@@ -22,7 +22,10 @@ class _ChattingRoomState extends State<ChattingRoom> {
     TextEditingController _textEditingController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chatting Room'),
+        title: const Text('Chatting Room',
+            style: TextStyle(
+                fontFamily: 'salt', color: Colors.white, fontSize: 20)),
+        backgroundColor: Colors.black,
         leading: IconButton(
           onPressed: () {},
           icon: const Icon(Icons.search),
@@ -34,7 +37,10 @@ class _ChattingRoomState extends State<ChattingRoom> {
                   context: context,
                   builder: (_) {
                     return AlertDialog(
-                      title: const Text('방 만들기'),
+                      title: const Text(
+                        '방 만들기',
+                        style: TextStyle(fontFamily: 'salt', fontSize: 30),
+                      ),
                       actions: [
                         Column(
                           children: [
@@ -49,7 +55,9 @@ class _ChattingRoomState extends State<ChattingRoom> {
                               },
 
                               decoration: const InputDecoration(
-                                  hintText: '방 이름을 정해주세요'),
+                                  hintText: '방 이름을 정해주세요',
+                                  hintStyle: TextStyle(
+                                      fontFamily: 'salt', fontSize: 20)),
                             ),
                           ],
                         ),
@@ -84,7 +92,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
           stream: FirebaseFirestore.instance.collection('chat').snapshots(),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
@@ -100,7 +108,9 @@ class _ChattingRoomState extends State<ChattingRoom> {
                             // roomName[index].room,
                             snapshot.data!.docs[index]['RoomName'],
                             style: const TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold),
+                                fontFamily: 'salt',
+                                color: Colors.black,
+                                fontSize: 30),
                           ),
                         ),
                       ),
