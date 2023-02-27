@@ -17,7 +17,6 @@ class ChatMain extends StatefulWidget {
 
 class _ChatMainState extends State<ChatMain> {
   File? _pickedImage;
-  File? get pickedImage => _pickedImage;
 
   Future<File?> _pickImage() async {
     final imagePicker = ImagePicker();
@@ -49,6 +48,7 @@ class _ChatMainState extends State<ChatMain> {
                               OutlinedButton.icon(
                                   onPressed: () {
                                     _pickImage();
+                                    Navigator.pop(context);
                                   },
                                   icon: const Icon(Icons.image),
                                   label: const Text('사진 추가하기'))
@@ -69,6 +69,7 @@ class _ChatMainState extends State<ChatMain> {
                 room: widget.room,
                 name: widget.name,
                 test: widget.test,
+                pickedImage: _pickedImage,
               ),
             ),
             SendMessage(
@@ -85,10 +86,15 @@ class _ChatMainState extends State<ChatMain> {
 
 class MessageText extends StatelessWidget {
   MessageText(
-      {required this.room, required this.name, required this.test, super.key});
+      {required this.room,
+      required this.name,
+      required this.test,
+      this.pickedImage,
+      super.key});
   var room;
   String? name;
   String? test;
+  File? pickedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +121,7 @@ class MessageText extends StatelessWidget {
           itemCount: chatDocs.length,
           itemBuilder: (context, index) {
             return TestWdiget(snapshot.data!.docs[index]['name'], name,
-                snapshot.data!.docs[index]['text']);
+                snapshot.data!.docs[index]['text'], pickedImage);
           },
         );
       },
@@ -177,7 +183,7 @@ class _SendMessageState extends State<SendMessage> {
   }
 }
 
-Widget TestWdiget(String? name, String? _name, String text) {
+Widget TestWdiget(String? name, String? _name, String text, File? pickedImage) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Row(
@@ -186,9 +192,7 @@ Widget TestWdiget(String? name, String? _name, String text) {
       children: [
         CircleAvatar(
           backgroundColor: Colors.blue,
-          // backgroundImage: widget.pickedImage != null
-          //     ? FileImage(widget.pickedImage!)
-          //     : null,
+          backgroundImage: pickedImage != null ? FileImage(pickedImage) : null,
         ),
         const SizedBox(width: 8),
         Column(

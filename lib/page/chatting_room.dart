@@ -96,7 +96,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
                 child: CircularProgressIndicator(),
               );
             }
-            final chatDocs = snapshot.data!.docs;
+            // final chatDocs = snapshot.data!.docs;
             return ListView.builder(
               itemBuilder: ((context, index) {
                 return InkWell(
@@ -140,7 +140,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
                   },
                 );
               }),
-              itemCount: chatDocs.length,
+              itemCount: snapshot.data!.docs.length,
             );
           })),
     );
