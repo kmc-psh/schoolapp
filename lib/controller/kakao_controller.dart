@@ -11,9 +11,9 @@ class LoginProvider with ChangeNotifier {
     if (await isKakaoTalkInstalled()) {
       try {
         await UserApi.instance.loginWithKakaoTalk();
-        String? name = await checkLogin();
+        String? email = await checkLogin();
         print('카카오톡으로 로그인 성공');
-        return name;
+        return email;
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
@@ -25,9 +25,9 @@ class LoginProvider with ChangeNotifier {
         // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
         try {
           await UserApi.instance.loginWithKakaoAccount();
-          String? name = await checkLogin();
+          String? email = await checkLogin();
           print('카카오계정으로 로그인 성공');
-          return name;
+          return email;
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
         }
@@ -35,29 +35,25 @@ class LoginProvider with ChangeNotifier {
     } else {
       try {
         await UserApi.instance.loginWithKakaoAccount();
-        String? name = await checkLogin();
+        String? email = await checkLogin();
         print('카카오계정으로 로그인 성공');
-        return name;
-      } catch (error) {
-        print('카카오계정으로 로그인 실패 $error');
+        return email;
+      } catch (e) {
+        print('카카오계정으로 로그인 실패 $e');
       }
     }
   }
 
   Future<String?> checkLogin() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     User user = await UserApi.instance.me();
     var kakaoProfile = user.kakaoAccount!.profile!.nickname;
     var kakaoEmail = user.kakaoAccount!.email;
-    var validUser =
-        FirebaseFirestore.instance.collection('회원정보').doc(kakaoProfile).id;
+    var validUser = firestore.collection('회원정보').doc(kakaoProfile).id;
     var name;
-    await FirebaseFirestore.instance
-        .collection('회원정보')
-        .doc(kakaoProfile)
-        .get()
-        .then((value) {
+    await firestore.collection('회원정보').doc(kakaoProfile).get().then((value) {
       if (value.data() == null) {
-        FirebaseFirestore.instance.collection('회원정보').doc(kakaoProfile).set(
+        FirebaseFirestore.instance.collection('회원정보').doc(kakaoEmail).set(
             {'pk': user.id, '카카오 프로필': kakaoProfile, '카카오 계정': kakaoEmail});
 
         name = kakaoProfile;
@@ -66,14 +62,14 @@ class LoginProvider with ChangeNotifier {
       dynamic user_pk = value.data();
       _userModel = UserModel.fromJson(user_pk);
       // doc 에 동명인이 있을경우
-      if (kakaoProfile == validUser) {
+      if (kakaoEmail == validUser) {
         // 동명인이 자기일 경우
         if (user.id == _userModel.pk) {
           name = validUser;
-          print('######### $name');
+
           return name;
         } else {
-          FirebaseFirestore.instance.collection('회원정보').doc(kakaoProfile).set({
+          FirebaseFirestore.instance.collection('회원정보').doc(kakaoEmail).set({
             'pk': user.id,
             '카카오 프로필': kakaoProfile,
             '카카오 계정': kakaoEmail,
@@ -87,6 +83,7 @@ class LoginProvider with ChangeNotifier {
       }
       return null;
     });
+
     return name;
   }
 }
