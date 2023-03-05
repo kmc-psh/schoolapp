@@ -5,6 +5,9 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:shcoolapp/api/user_api.dart';
 import 'package:shcoolapp/page/addPostScreen.dart';
+import 'package:shcoolapp/page/calendarpage.dart';
+import 'package:shcoolapp/page/chatting_room.dart';
+import 'package:shcoolapp/page/todolist_page.dart';
 import 'package:shcoolapp/provider/board_provider.dart';
 
 class BoardScreen extends StatefulWidget {
@@ -16,11 +19,30 @@ class BoardScreen extends StatefulWidget {
 }
 
 class _BoardScreenState extends State<BoardScreen> {
+  // int _selectedIndex = 0;
+
+  // final List<Widget> _widgetList = <Widget>[
+  //   BoardScreen(id: id),
+  //   CalendarPage(),
+  //   TodoPage(),
+  //   ChattingRoom(room: '', name: '')
+  // ];
+
+  // void _selectedPage(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('게시판'),
+        backgroundColor: Colors.black,
+        title: const Text(
+          '게시판',
+          style: TextStyle(fontFamily: 'salt', fontSize: 35),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -56,10 +78,23 @@ class _BoardScreenState extends State<BoardScreen> {
                       color: Colors.grey,
                     ),
                   );
-                }))
+                })),
           ],
         ),
       ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   type: BottomNavigationBarType.fixed,
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.calendar_month), label: '캘린더'),
+      //     BottomNavigationBarItem(icon: Icon(Icons.list), label: '투두 리스트'),
+      //     BottomNavigationBarItem(icon: Icon(Icons.chat), label: '메시지')
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   selectedItemColor: Colors.black87,
+      //   onTap: _selectedPage,
+      // ),
     );
   }
 }
