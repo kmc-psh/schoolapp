@@ -46,6 +46,7 @@ dependencies:
   uuid: ^3.0.7 # 개인의 유니크한 id 생성 
   table_calendar: ^3.0.9 # 캘린더
   intl: ^0.18.0
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:

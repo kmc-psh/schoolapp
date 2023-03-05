@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:shcoolapp/controller/kakao_controller.dart';
+import 'package:shcoolapp/controller/root_controller.dart';
 import 'package:shcoolapp/page/addPostScreen.dart';
 import 'package:shcoolapp/page/authpage.dart';
+import 'package:shcoolapp/page/boardScreen.dart';
 import 'package:shcoolapp/page/calendarpage.dart';
 import 'package:shcoolapp/page/chatting_room.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/page/kakao_loginScreen.dart';
 import 'package:shcoolapp/page/loginpage.dart';
+import 'package:shcoolapp/page/mainpage.dart';
 import 'package:shcoolapp/page/registScreen.dart';
 import 'package:shcoolapp/page/studentIDpage.dart';
 import 'package:shcoolapp/page/todolist_page.dart';
@@ -33,18 +37,29 @@ class MyApp extends StatelessWidget {
   //현재 페이지 설정
 
   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return MultiProvider(
+//         providers: [
+//           ChangeNotifierProvider(
+//             create: ((context) => ChattingProvider()),
+//           ),
+//           ChangeNotifierProvider(create: (context) => LoginProvider())
+//         ],
+//         child: MaterialApp(
+//             routes: {'/register': (context) => ResgisterScreen()},
+//             home: MainPage()));
+//   }
+// }
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: ((context) => ChattingProvider()),
-          ),
-          ChangeNotifierProvider(create: (context) => LoginProvider())
-        ],
-        child: MaterialApp(
-            routes: {'/register': (context) => ResgisterScreen()},
-            home: KakaoLoginScreen()));
+    return GetMaterialApp(
+      initialBinding: BindingsBuilder(() {
+        Get.put(RootController());
+      }),
+      home: const MainPage(),
+    );
   }
 }
 
