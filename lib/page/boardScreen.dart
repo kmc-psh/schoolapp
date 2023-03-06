@@ -48,17 +48,6 @@ class _BoardScreenState extends State<BoardScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddPostScreen(id: widget.id)));
-                },
-                child: Text(widget.id),
-              ),
-            ),
             StreamBuilder<QuerySnapshot>(
                 stream:
                     FirebaseFirestore.instance.collection('board').snapshots(),
