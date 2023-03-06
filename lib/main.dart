@@ -37,31 +37,31 @@ class MyApp extends StatelessWidget {
   //현재 페이지 설정
 
   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiProvider(
-//         providers: [
-//           ChangeNotifierProvider(
-//             create: ((context) => ChattingProvider()),
-//           ),
-//           ChangeNotifierProvider(create: (context) => LoginProvider())
-//         ],
-//         child: MaterialApp(
-//             routes: {'/register': (context) => ResgisterScreen()},
-//             home: MainPage()));
-//   }
-// }
-
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      initialBinding: BindingsBuilder(() {
-        Get.put(RootController());
-      }),
-      home: const MainPage(),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: ((context) => ChattingProvider()),
+          ),
+          ChangeNotifierProvider(create: (context) => LoginProvider())
+        ],
+        child: const MaterialApp(
+            // routes: {'/register': (context) => MainPage()},
+            home: KakaoLoginScreen()));
   }
 }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return GetMaterialApp(
+  //     initialBinding: BindingsBuilder(() {
+  //       Get.put(RootController());
+  //     }),
+  //     home: MainPage(),
+  //   );
+  // }
+// }
 
 
 // ------------------------------------------------------------
