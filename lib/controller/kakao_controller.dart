@@ -5,16 +5,25 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:shcoolapp/model/user_model.dart';
 import 'package:shcoolapp/page/loginpage.dart';
 
+enum TargetPage { main, error }
+
 class LoginProvider with ChangeNotifier {
+  TargetPage _tartgetPage = TargetPage.error;
+  TargetPage get targetPage => _tartgetPage;
+
   UserModel _userModel = UserModel();
   Future<String?> kakaoLogin() async {
     if (await isKakaoTalkInstalled()) {
       try {
         await UserApi.instance.loginWithKakaoTalk();
         String? email = await checkLogin();
+        _tartgetPage = TargetPage.main;
+        notifyListeners();
         print('카카오톡으로 로그인 성공');
         return email;
       } catch (error) {
+        _tartgetPage = TargetPage.error;
+        notifyListeners();
         print('카카오톡으로 로그인 실패 $error');
 
         // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
@@ -26,9 +35,13 @@ class LoginProvider with ChangeNotifier {
         try {
           await UserApi.instance.loginWithKakaoAccount();
           String? email = await checkLogin();
+          _tartgetPage = TargetPage.main;
+          notifyListeners();
           print('카카오계정으로 로그인 성공');
           return email;
         } catch (error) {
+          _tartgetPage = TargetPage.error;
+          notifyListeners();
           print('카카오계정으로 로그인 실패 $error');
         }
       }
@@ -36,9 +49,13 @@ class LoginProvider with ChangeNotifier {
       try {
         await UserApi.instance.loginWithKakaoAccount();
         String? email = await checkLogin();
+        _tartgetPage = TargetPage.main;
+        notifyListeners();
         print('카카오계정으로 로그인 성공');
         return email;
       } catch (e) {
+        _tartgetPage = TargetPage.error;
+        notifyListeners();
         print('카카오계정으로 로그인 실패 $e');
       }
     }

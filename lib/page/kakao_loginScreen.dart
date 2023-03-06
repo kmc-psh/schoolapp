@@ -24,10 +24,13 @@ class _KakaoLoginScreenState extends State<KakaoLoginScreen> {
             String? name = await provider.kakaoLogin();
             // 카카오 로그인때 이름 안넘어오면 에러문구 설정 해야함
             if (mounted) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MainPage(name: name)));
+              provider.targetPage == TargetPage.main
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MainPage(name: name)))
+                  : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Center(child: Text('카카오 로그인 오류 !'))));
             }
           },
           child: Image.asset('assets/kakao.png'),
