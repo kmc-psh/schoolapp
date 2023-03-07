@@ -39,7 +39,10 @@ import 'chatting_room.dart';
 // }
 class MainPage extends StatefulWidget {
   String? name;
-  MainPage({required this.name, Key? key}) : super(key: key);
+  String? email;
+  int? pk;
+  MainPage({required this.name, this.email, this.pk, Key? key})
+      : super(key: key);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -62,7 +65,12 @@ class _MainPageState extends State<MainPage> {
       ),
       CalendarPage(),
       TodoPage(),
-      ChattingRoom(room: '', name: '')
+      ChattingRoom(
+        room: '',
+        name: widget.name,
+        email: widget.email,
+        pk: widget.pk,
+      )
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(

@@ -1,16 +1,25 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shcoolapp/controller/kakao_controller.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 
 class ChatMain extends StatefulWidget {
   ChatMain(
-      {required this.room, required this.name, required this.test, super.key});
+      {required this.room,
+      required this.name,
+      required this.test,
+      this.email,
+      this.pk,
+      super.key});
   var room;
   String? name;
   String? test;
+  String? email;
+  int? pk;
   @override
   State<ChatMain> createState() => _ChatMainState();
 }
@@ -18,7 +27,30 @@ class ChatMain extends StatefulWidget {
 class _ChatMainState extends State<ChatMain> {
   File? _pickedImage;
 
-  Future<File?> _pickImage() async {
+  Future _uploadImage(File image) async {
+    var controller = LoginProvider();
+    final firebaseStorageRef = FirebaseStorage.instance;
+
+    var test = firebaseStorageRef
+        .ref()
+        .child('profile/${widget.name}/')
+        .putFile(image);
+
+    final downloadUrl = await firebaseStorageRef
+        .ref()
+        .child('profile/${widget.name}')
+        .getDownloadURL();
+    print('############## $downloadUrl');
+
+    FirebaseFirestore.instance.collection('회원정보').doc(widget.email).set({
+      'pk': widget.pk,
+      '카카오 계정': controller.test,
+      '카카오 프로필': widget.name,
+      '프로필 이미지': downloadUrl
+    });
+  }
+
+  Future<File> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedImageFile = await imagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
@@ -27,7 +59,7 @@ class _ChatMainState extends State<ChatMain> {
         _pickedImage = File(pickedImageFile.path);
       }
     });
-    return _pickedImage;
+    return _pickedImage!;
   }
 
   @override
@@ -46,8 +78,9 @@ class _ChatMainState extends State<ChatMain> {
                           Column(
                             children: [
                               OutlinedButton.icon(
-                                  onPressed: () {
-                                    _pickImage();
+                                  onPressed: () async {
+                                    File image = await _pickImage();
+                                    _uploadImage(image);
                                     Navigator.pop(context);
                                   },
                                   icon: const Icon(Icons.image),
@@ -191,8 +224,10 @@ Widget TestWdiget(String? name, String? _name, String text, File? pickedImage) {
           name == _name ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         CircleAvatar(
-          backgroundColor: Colors.blue,
-          backgroundImage: pickedImage != null ? FileImage(pickedImage) : null,
+          backgroundColor: Colors.white,
+          // backgroundImage: pickedImage != null ? FileImage(pickedImage) : null,
+          child: Image.network(
+              'https://firebasestorage.googleapis.com/v0/b/school-app-444c0.appspot.com/o/profile%2FParkaa?alt=media&token=292a396e-183c-43f5-b52c-3931e5469d47'),
         ),
         const SizedBox(width: 8),
         Column(

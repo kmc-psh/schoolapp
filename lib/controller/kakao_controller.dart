@@ -11,7 +11,13 @@ class LoginProvider with ChangeNotifier {
   TargetPage _tartgetPage = TargetPage.error;
   TargetPage get targetPage => _tartgetPage;
 
+  dynamic _email;
+  dynamic get test => _email;
+
   UserModel _userModel = UserModel();
+
+  dynamic _pk;
+  int get pk => _pk;
   Future<String?> kakaoLogin() async {
     if (await isKakaoTalkInstalled()) {
       try {
@@ -65,13 +71,16 @@ class LoginProvider with ChangeNotifier {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     User user = await UserApi.instance.me();
     var kakaoProfile = user.kakaoAccount!.profile!.nickname;
-    var kakaoEmail = user.kakaoAccount!.email;
+    _email = user.kakaoAccount!.email;
+    _pk = user.id;
     var validUser = firestore.collection('회원정보').doc(kakaoProfile).id;
     var name;
     await firestore.collection('회원정보').doc(kakaoProfile).get().then((value) {
       if (value.data() == null) {
-        FirebaseFirestore.instance.collection('회원정보').doc(kakaoEmail).set(
-            {'pk': user.id, '카카오 프로필': kakaoProfile, '카카오 계정': kakaoEmail});
+        FirebaseFirestore.instance
+            .collection('회원정보')
+            .doc(_email)
+            .set({'pk': user.id, '카카오 프로필': kakaoProfile, '카카오 계정': _email});
 
         name = kakaoProfile;
         return name;
@@ -79,17 +88,17 @@ class LoginProvider with ChangeNotifier {
       dynamic user_pk = value.data();
       _userModel = UserModel.fromJson(user_pk);
       // doc 에 동명인이 있을경우
-      if (kakaoEmail == validUser) {
+      if (_email == validUser) {
         // 동명인이 자기일 경우
         if (user.id == _userModel.pk) {
           name = validUser;
 
           return name;
         } else {
-          FirebaseFirestore.instance.collection('회원정보').doc(kakaoEmail).set({
+          FirebaseFirestore.instance.collection('회원정보').doc(_email).set({
             'pk': user.id,
             '카카오 프로필': kakaoProfile,
-            '카카오 계정': kakaoEmail,
+            '카카오 계정': _email,
           });
           name = FirebaseFirestore.instance
               .collection('회원정보')

@@ -6,9 +6,12 @@ import 'package:shcoolapp/test.dart';
 
 class ChattingRoom extends StatefulWidget {
   final String? name;
+  String? email;
   String? room = '';
+  int? pk;
 
-  ChattingRoom({required this.room, required this.name, super.key});
+  ChattingRoom(
+      {required this.room, required this.name, this.email, this.pk, super.key});
 
   @override
   State<ChattingRoom> createState() => _ChattingRoomState();
@@ -133,10 +136,11 @@ class _ChattingRoomState extends State<ChattingRoom> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatMain(
-                                  room: snapshot.data!.docs[index]['RoomName'],
-                                  name: widget.name,
-                                  test: snapshot.data!.docs[index]['name'],
-                                )));
+                                room: snapshot.data!.docs[index]['RoomName'],
+                                name: widget.name,
+                                test: snapshot.data!.docs[index]['name'],
+                                email: widget.email,
+                                pk: widget.pk)));
                   },
                 );
               }),
