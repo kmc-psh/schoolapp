@@ -26,8 +26,9 @@ class ChatMain extends StatefulWidget {
 
 class _ChatMainState extends State<ChatMain> {
   File? _pickedImage;
+  late String imageUrl = '';
 
-  Future _uploadImage(File image) async {
+  Future<String> _uploadImage(File image) async {
     var controller = LoginProvider();
     final firebaseStorageRef = FirebaseStorage.instance;
 
@@ -48,6 +49,21 @@ class _ChatMainState extends State<ChatMain> {
       '카카오 프로필': widget.name,
       '프로필 이미지': downloadUrl
     });
+
+    String imageUrl = await FirebaseFirestore.instance
+        .collection('회원정보')
+        .doc(widget.email)
+        .get()
+        .then((value) {
+      print(value.data());
+      dynamic test = value.data();
+      print(test['pk']);
+
+      String imageUrl = test['프로필 이미지'];
+      print(imageUrl);
+      return imageUrl;
+    });
+    return imageUrl;
   }
 
   Future<File> _pickImage() async {
@@ -80,7 +96,7 @@ class _ChatMainState extends State<ChatMain> {
                               OutlinedButton.icon(
                                   onPressed: () async {
                                     File image = await _pickImage();
-                                    _uploadImage(image);
+                                    imageUrl = await _uploadImage(image);
                                     Navigator.pop(context);
                                   },
                                   icon: const Icon(Icons.image),
@@ -103,6 +119,7 @@ class _ChatMainState extends State<ChatMain> {
                 name: widget.name,
                 test: widget.test,
                 pickedImage: _pickedImage,
+                imageUrl: imageUrl,
               ),
             ),
             SendMessage(
@@ -123,11 +140,13 @@ class MessageText extends StatelessWidget {
       required this.name,
       required this.test,
       this.pickedImage,
+      this.imageUrl,
       super.key});
   var room;
   String? name;
   String? test;
   File? pickedImage;
+  String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +173,7 @@ class MessageText extends StatelessWidget {
           itemCount: chatDocs.length,
           itemBuilder: (context, index) {
             return TestWdiget(snapshot.data!.docs[index]['name'], name,
-                snapshot.data!.docs[index]['text'], pickedImage);
+                snapshot.data!.docs[index]['text'], pickedImage, imageUrl);
           },
         );
       },
@@ -216,7 +235,8 @@ class _SendMessageState extends State<SendMessage> {
   }
 }
 
-Widget TestWdiget(String? name, String? _name, String text, File? pickedImage) {
+Widget TestWdiget(String? name, String? _name, String text, File? pickedImage,
+    String? imageUrl) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Row(
@@ -224,10 +244,9 @@ Widget TestWdiget(String? name, String? _name, String text, File? pickedImage) {
           name == _name ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         CircleAvatar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.blue,
           // backgroundImage: pickedImage != null ? FileImage(pickedImage) : null,
-          child: Image.network(
-              'https://firebasestorage.googleapis.com/v0/b/school-app-444c0.appspot.com/o/profile%2FParkaa?alt=media&token=292a396e-183c-43f5-b52c-3931e5469d47'),
+          child: imageUrl != null ? Image.network(imageUrl) : SizedBox(),
         ),
         const SizedBox(width: 8),
         Column(
