@@ -5,16 +5,27 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:uuid/uuid.dart';
 
 class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+  int? pk;
+
+  CalendarPage({super.key, this.pk});
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  var pk = const Uuid().v1();
-
   late Map<DateTime, List<Event>> selectedEvents;
+
+  // List<Event> _evloder(DateTime date) {
+  //   return selectedEvents[today] ?? [];
+  // }
+
+  // @override
+  // void initState() {
+  //   selectedEvents = {};
+
+  //   super.initState();
+  // }
 
   DateTime today = DateTime.now();
 
@@ -73,7 +84,8 @@ class _CalendarPageState extends State<CalendarPage> {
         children: [
           StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('$pk.$today')
+                  // .collection('$pk.$today')
+                  .collection(widget.pk.toString())
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -95,6 +107,26 @@ class _CalendarPageState extends State<CalendarPage> {
                         firstDay: DateTime.utc(2010, 10, 16),
                         lastDay: DateTime.utc(2030, 10, 16),
                         onDaySelected: _onDaySelected,
+                        // eventLoader: _evloder,
+                      ),
+                      const Divider(
+                        thickness: 1,
+                        color: Colors.black,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              '하루 일정',
+                              style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.black,
+                                  fontSize: 20),
+                            ),
+                          ],
+                        ),
                       ),
                       Expanded(
                         child: ListView(
@@ -116,9 +148,8 @@ class _CalendarPageState extends State<CalendarPage> {
       snapshot['title'],
     );
     return ListTile(
-      title: Text(
-        event.title,
-      ),
+      title: Text(event.title,
+          style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 18)),
       trailing: IconButton(
         icon: const Icon(Icons.delete_forever),
         onPressed: () => _deleteEvent(snapshot),
@@ -128,7 +159,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   void _deleteEvent(DocumentSnapshot snapshot) {
     FirebaseFirestore.instance
-        .collection('$pk.$today')
+        .collection(widget.pk.toString())
         .doc(snapshot.id)
         .delete();
   }
@@ -136,7 +167,7 @@ class _CalendarPageState extends State<CalendarPage> {
   void _addEvent(Event event) {
     setState(() {
       FirebaseFirestore.instance
-          .collection('$pk.$today')
+          .collection(widget.pk.toString())
           .add({'title': event.title});
       _eventController.text = "";
     });
