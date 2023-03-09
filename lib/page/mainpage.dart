@@ -63,7 +63,7 @@ class _MainPageState extends State<MainPage> {
       BoardScreen(
         id: '',
       ),
-      CalendarPage(),
+      CalendarPage(pk: widget.pk),
       TodoPage(),
       ChattingRoom(
         room: '',
