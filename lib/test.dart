@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shcoolapp/controller/kakao_controller.dart';
+import 'package:shcoolapp/controller/user_controller.dart';
 import 'package:shcoolapp/utils/chatmessage.dart';
 
 class ChatMain extends StatefulWidget {
@@ -14,22 +16,22 @@ class ChatMain extends StatefulWidget {
       required this.test,
       this.email,
       this.pk,
+      this.imageUrl,
       super.key});
   var room;
   String? name;
   String? test;
   String? email;
   int? pk;
+  String? imageUrl;
   @override
   State<ChatMain> createState() => _ChatMainState();
 }
 
 class _ChatMainState extends State<ChatMain> {
   File? _pickedImage;
-  late String imageUrl = '';
 
   Future<String> _uploadImage(File image) async {
-    var controller = LoginProvider();
     final firebaseStorageRef = FirebaseStorage.instance;
 
     var test = firebaseStorageRef
@@ -45,10 +47,17 @@ class _ChatMainState extends State<ChatMain> {
 
     FirebaseFirestore.instance.collection('회원정보').doc(widget.email).set({
       'pk': widget.pk,
-      '카카오 계정': controller.test,
+      '카카오 계정': widget.email,
       '카카오 프로필': widget.name,
       '프로필 이미지': downloadUrl
     });
+    print(
+        '${FirebaseFirestore.instance.collection('회원정보').doc(widget.email).set({
+          'pk': widget.pk,
+          '카카오 계정': widget.email,
+          '카카오 프로필': widget.name,
+          '프로필 이미지': downloadUrl
+        })}');
 
     String imageUrl = await FirebaseFirestore.instance
         .collection('회원정보')
@@ -66,6 +75,11 @@ class _ChatMainState extends State<ChatMain> {
     return imageUrl;
   }
 
+  void setImage() async {
+    var test = await FirebaseFirestore.instance.collection('회원정보').doc();
+    // print(test);
+  }
+
   Future<File> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedImageFile = await imagePicker.pickImage(
@@ -80,6 +94,9 @@ class _ChatMainState extends State<ChatMain> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<UserProvider>(context);
+    setImage();
+    String testUrl = provider.userModel.image;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -96,7 +113,8 @@ class _ChatMainState extends State<ChatMain> {
                               OutlinedButton.icon(
                                   onPressed: () async {
                                     File image = await _pickImage();
-                                    imageUrl = await _uploadImage(image);
+                                    await _uploadImage(image);
+                                    UserProvider().fetchUserData(widget.email);
                                     Navigator.pop(context);
                                   },
                                   icon: const Icon(Icons.image),
@@ -119,13 +137,16 @@ class _ChatMainState extends State<ChatMain> {
                 name: widget.name,
                 test: widget.test,
                 pickedImage: _pickedImage,
-                imageUrl: imageUrl,
+                // imageUrl: widget.imageUrl,
+                imageUrl: testUrl,
+                pk: widget.pk,
               ),
             ),
             SendMessage(
               room: widget.room,
               name: widget.name,
               test: widget.test,
+              pk: widget.pk,
             ),
           ],
         ),
@@ -141,52 +162,89 @@ class MessageText extends StatelessWidget {
       required this.test,
       this.pickedImage,
       this.imageUrl,
+      this.pk,
       super.key});
   var room;
   String? name;
   String? test;
   File? pickedImage;
   String? imageUrl;
+  int? pk;
+
+  getImage(String email) async {
+    dynamic test =
+        await FirebaseFirestore.instance.collection('회원정보').doc(email).get();
+    imageUrl = test['카카오 이미지'];
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('chat')
-          .doc('name: $test, room: $room')
-          .collection('RoomName')
-          .doc(room)
-          .collection('message')
-          .orderBy('time', descending: true)
-          .snapshots(),
-      builder: (context,
-          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        final chatDocs = snapshot.data!.docs;
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('회원정보').snapshots(),
+        builder: (context, snapshot1) {
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('chat')
+                .doc('name: $test, room: $room')
+                .collection('RoomName')
+                .doc(room)
+                .collection('message')
+                .orderBy('time', descending: true)
+                .snapshots(),
+            builder: (context, snapshot2) {
+              print('${snapshot2.data}');
+              if (snapshot2.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final chatDocs = snapshot2.data!.docs;
 
-        return ListView.builder(
-          reverse: true,
-          itemCount: chatDocs.length,
-          itemBuilder: (context, index) {
-            return TestWdiget(snapshot.data!.docs[index]['name'], name,
-                snapshot.data!.docs[index]['text'], pickedImage, imageUrl);
-          },
-        );
-      },
-    );
+              return ListView.builder(
+                reverse: true,
+                itemCount: chatDocs.length,
+                itemBuilder: (context, index) {
+                  // if (snapshot1.data!.docs[index]['pk'] ==
+                  //     snapshot2.data!.docs[index]['pk']) {
+                  //   // FirebaseFirestore.instance
+                  //   //     .collection('회원정보')
+                  //   //     .doc(snapshot1.data!.docs[index]['카카오 계정'])
+                  //   //     .get();
+
+                  //   getImage(snapshot1.data!.docs[index]['카카오 계정']);
+                  // }
+                  return pk == snapshot1.data!.docs[index]['pk']
+                      ? TestWdiget(
+                          name,
+                          snapshot1.data!.docs[index]['카카오 프로필'],
+                          snapshot2.data!.docs[index]['text'],
+                          pickedImage,
+                          imageUrl)
+                      : TestWdiget(
+                          name,
+                          snapshot1.data!.docs[index]['카카오 프로필'],
+                          snapshot2.data!.docs[index]['text'],
+                          pickedImage,
+                          imageUrl);
+                },
+              );
+            },
+          );
+        });
   }
 }
 
 class SendMessage extends StatefulWidget {
   SendMessage(
-      {required this.room, required this.name, required this.test, super.key});
+      {required this.room,
+      required this.name,
+      required this.test,
+      this.pk,
+      super.key});
   var room;
   String? name;
   String? test;
+  int? pk;
 
   @override
   State<SendMessage> createState() => _SendMessageState();
@@ -224,7 +282,8 @@ class _SendMessageState extends State<SendMessage> {
                     .add({
                   'text': _textEditingController.text,
                   'name': widget.name,
-                  'time': Timestamp.now()
+                  'time': Timestamp.now(),
+                  'pk': widget.pk,
                 });
                 _textEditingController.clear();
               },
@@ -246,7 +305,7 @@ Widget TestWdiget(String? name, String? _name, String text, File? pickedImage,
         CircleAvatar(
           backgroundColor: Colors.blue,
           // backgroundImage: pickedImage != null ? FileImage(pickedImage) : null,
-          child: imageUrl != null ? Image.network(imageUrl) : SizedBox(),
+          child: imageUrl == '' ? SizedBox() : Image.network(imageUrl!),
         ),
         const SizedBox(width: 8),
         Column(
