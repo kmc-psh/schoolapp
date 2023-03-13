@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -88,6 +89,21 @@ class _ChatMainState extends State<ChatMain> {
     });
   }
 
+  // jokka() async {
+  //   if (pk == userPk) {
+  //     await FirebaseFirestore.instance
+  //         .collection('회원정보')
+  //         .get()
+  //         .then((QuerySnapshot) {
+  //       for (var docSnapshot in QuerySnapshot.docs) {
+  //         // print('${docSnapshot.data()}');
+  //         dynamic userData = docSnapshot.data();
+  //         imgUrl = userData['프로필 이미지'];
+  //       }
+  //     });
+  //   }
+  // }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -160,7 +176,7 @@ class _ChatMainState extends State<ChatMain> {
   }
 }
 
-class MessageText extends StatelessWidget {
+class MessageText extends StatefulWidget {
   MessageText(
       {required this.room,
       required this.name,
@@ -178,14 +194,11 @@ class MessageText extends StatelessWidget {
   int? pk;
   String? email;
 
-  getImage(String? email, int userPk) async {
-    dynamic test =
-        await FirebaseFirestore.instance.collection('회원정보').doc(email).get();
-    if (test['pk'] == userPk) {
-      imageUrl = test['프로필 이미지'];
-    }
-  }
+  @override
+  State<MessageText> createState() => _MessageTextState();
+}
 
+class _MessageTextState extends State<MessageText> {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<UserProvider>(context);
@@ -193,9 +206,9 @@ class MessageText extends StatelessWidget {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('chat')
-            .doc('name: $test, room: $room')
+            .doc('name: ${widget.test}, room: ${widget.room}')
             .collection('RoomName')
-            .doc(room)
+            .doc(widget.room)
             .collection('message')
             .orderBy('time', descending: true)
             .snapshots(),
@@ -211,22 +224,90 @@ class MessageText extends StatelessWidget {
                   // 채팅 데이터들 안에 유저의 pk 값 존재함 => 회원정보에도 pk 값 존재 : 비교할 수 있음
                   // 채팅 데이터 pk == 회원정보 pk => 회원정보 안의 이미지 url 을 받아와서 전달 가능 ?.?
                   ? TestWdiget(
-                      name,
+                      widget.name,
                       snapshot.data?.docs[index]['name'],
                       snapshot.data?.docs[index]['text'],
-                      pickedImage,
+                      widget.pickedImage,
                     )
                   : TestWdiget(
-                      name,
+                      widget.name,
                       snapshot.data?.docs[index]['name'],
                       snapshot.data?.docs[index]['text'],
-                      pickedImage,
+                      widget.pickedImage,
                     );
             },
           );
         });
   }
 }
+
+// class MessageText extends StatelessWidget {
+//   MessageText(
+//       {required this.room,
+//       required this.name,
+//       required this.test,
+//       this.pickedImage,
+//       this.imageUrl,
+//       this.pk,
+//       this.email,
+//       super.key});
+//   var room;
+//   String? name;
+//   String? test;
+//   File? pickedImage;
+//   String? imageUrl;
+//   int? pk;
+//   String? email;
+
+//   getImage(String? email, int userPk) async {
+//     dynamic test =
+//         await FirebaseFirestore.instance.collection('회원정보').doc(email).get();
+//     if (test['pk'] == userPk) {
+//       imageUrl = test['프로필 이미지'];
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     var provider = Provider.of<UserProvider>(context);
+//     print('!!!!!!! ${provider.userModel.email}');
+//     return StreamBuilder<QuerySnapshot>(
+//         stream: FirebaseFirestore.instance
+//             .collection('chat')
+//             .doc('name: $test, room: $room')
+//             .collection('RoomName')
+//             .doc(room)
+//             .collection('message')
+//             .orderBy('time', descending: true)
+//             .snapshots(),
+//         builder: (context, snapshot) {
+//           return ListView.builder(
+//             reverse: true,
+//             itemCount: snapshot.data?.docs.length,
+//             itemBuilder: (context, index) {
+//               // UserProvider().fetchAllData(snapshot.data?.docs[index]['pk']);
+//               return provider.userModel.pk == snapshot.data?.docs[index]['pk']
+//                   // ? Text("참 #### ${snapshot.data?.docs[index]['name']}")
+//                   // : Text("거짓 #### ${snapshot.data?.docs[index]['name']}");
+//                   // 채팅 데이터들 안에 유저의 pk 값 존재함 => 회원정보에도 pk 값 존재 : 비교할 수 있음
+//                   // 채팅 데이터 pk == 회원정보 pk => 회원정보 안의 이미지 url 을 받아와서 전달 가능 ?.?
+//                   ? TestWdiget(
+//                       name,
+//                       snapshot.data?.docs[index]['name'],
+//                       snapshot.data?.docs[index]['text'],
+//                       pickedImage,
+//                     )
+//                   : TestWdiget(
+//                       name,
+//                       snapshot.data?.docs[index]['name'],
+//                       snapshot.data?.docs[index]['text'],
+//                       pickedImage,
+//                     );
+//             },
+//           );
+//         });
+//   }
+// }
 
 class SendMessage extends StatefulWidget {
   SendMessage(
