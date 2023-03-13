@@ -30,6 +30,7 @@ class ChatMain extends StatefulWidget {
 
 class _ChatMainState extends State<ChatMain> {
   File? _pickedImage;
+  String? imageUrl;
 
   Future<String> _uploadImage(File image) async {
     final firebaseStorageRef = FirebaseStorage.instance;
@@ -45,39 +46,21 @@ class _ChatMainState extends State<ChatMain> {
         .getDownloadURL();
     print('############## $downloadUrl');
 
-    FirebaseFirestore.instance.collection('회원정보').doc(widget.email).set({
+    await FirebaseFirestore.instance.collection('회원정보').doc(widget.email).set({
       'pk': widget.pk,
       '카카오 계정': widget.email,
       '카카오 프로필': widget.name,
       '프로필 이미지': downloadUrl
     });
-    print(
-        '${FirebaseFirestore.instance.collection('회원정보').doc(widget.email).set({
-          'pk': widget.pk,
-          '카카오 계정': widget.email,
-          '카카오 프로필': widget.name,
-          '프로필 이미지': downloadUrl
-        })}');
 
-    String imageUrl = await FirebaseFirestore.instance
+    dynamic imgTest = await FirebaseFirestore.instance
         .collection('회원정보')
         .doc(widget.email)
-        .get()
-        .then((value) {
-      print(value.data());
-      dynamic test = value.data();
-      print(test['pk']);
+        .get();
 
-      String imageUrl = test['프로필 이미지'];
-      print(imageUrl);
-      return imageUrl;
-    });
+    String imageUrl = imgTest['프로필 이미지'];
+
     return imageUrl;
-  }
-
-  void setImage() async {
-    var test = await FirebaseFirestore.instance.collection('회원정보').doc();
-    // print(test);
   }
 
   Future<File> _pickImage() async {
@@ -92,11 +75,31 @@ class _ChatMainState extends State<ChatMain> {
     return _pickedImage!;
   }
 
+  getImage() async {
+    var test = await FirebaseFirestore.instance
+        .collection('회원정보')
+        .get()
+        .then((QuerySnapshot) {
+      for (var docSnapshot in QuerySnapshot.docs) {
+        print('${docSnapshot.data()}');
+        var test2 = docSnapshot.data();
+        print("test2['프로필 이미지']");
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<UserProvider>(context, listen: false).fetchAllData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<UserProvider>(context);
-    setImage();
-    String testUrl = provider.userModel.image;
+    print("########1 test ${provider.userModel.profile}");
+    String testUrl = "provider.userModel.image";
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -113,8 +116,9 @@ class _ChatMainState extends State<ChatMain> {
                               OutlinedButton.icon(
                                   onPressed: () async {
                                     File image = await _pickImage();
-                                    await _uploadImage(image);
+                                    String testImg = await _uploadImage(image);
                                     UserProvider().fetchUserData(widget.email);
+                                    await getImage();
                                     Navigator.pop(context);
                                   },
                                   icon: const Icon(Icons.image),
@@ -140,6 +144,7 @@ class _ChatMainState extends State<ChatMain> {
                 // imageUrl: widget.imageUrl,
                 imageUrl: testUrl,
                 pk: widget.pk,
+                email: widget.email,
               ),
             ),
             SendMessage(
@@ -163,6 +168,7 @@ class MessageText extends StatelessWidget {
       this.pickedImage,
       this.imageUrl,
       this.pk,
+      this.email,
       super.key});
   var room;
   String? name;
@@ -170,64 +176,52 @@ class MessageText extends StatelessWidget {
   File? pickedImage;
   String? imageUrl;
   int? pk;
+  String? email;
 
-  getImage(String email) async {
+  getImage(String? email, int userPk) async {
     dynamic test =
         await FirebaseFirestore.instance.collection('회원정보').doc(email).get();
-    imageUrl = test['카카오 이미지'];
+    if (test['pk'] == userPk) {
+      imageUrl = test['프로필 이미지'];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<UserProvider>(context);
+    print('!!!!!!! ${provider.userModel.email}');
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('회원정보').snapshots(),
-        builder: (context, snapshot1) {
-          return StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('chat')
-                .doc('name: $test, room: $room')
-                .collection('RoomName')
-                .doc(room)
-                .collection('message')
-                .orderBy('time', descending: true)
-                .snapshots(),
-            builder: (context, snapshot2) {
-              print('${snapshot2.data}');
-              if (snapshot2.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              final chatDocs = snapshot2.data!.docs;
-
-              return ListView.builder(
-                reverse: true,
-                itemCount: chatDocs.length,
-                itemBuilder: (context, index) {
-                  // if (snapshot1.data!.docs[index]['pk'] ==
-                  //     snapshot2.data!.docs[index]['pk']) {
-                  //   // FirebaseFirestore.instance
-                  //   //     .collection('회원정보')
-                  //   //     .doc(snapshot1.data!.docs[index]['카카오 계정'])
-                  //   //     .get();
-
-                  //   getImage(snapshot1.data!.docs[index]['카카오 계정']);
-                  // }
-                  return pk == snapshot1.data!.docs[index]['pk']
-                      ? TestWdiget(
-                          name,
-                          snapshot1.data!.docs[index]['카카오 프로필'],
-                          snapshot2.data!.docs[index]['text'],
-                          pickedImage,
-                          imageUrl)
-                      : TestWdiget(
-                          name,
-                          snapshot1.data!.docs[index]['카카오 프로필'],
-                          snapshot2.data!.docs[index]['text'],
-                          pickedImage,
-                          imageUrl);
-                },
-              );
+        stream: FirebaseFirestore.instance
+            .collection('chat')
+            .doc('name: $test, room: $room')
+            .collection('RoomName')
+            .doc(room)
+            .collection('message')
+            .orderBy('time', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          return ListView.builder(
+            reverse: true,
+            itemCount: snapshot.data?.docs.length,
+            itemBuilder: (context, index) {
+              // UserProvider().fetchAllData(snapshot.data?.docs[index]['pk']);
+              return provider.userModel.pk == snapshot.data?.docs[index]['pk']
+                  // ? Text("참 #### ${snapshot.data?.docs[index]['name']}")
+                  // : Text("거짓 #### ${snapshot.data?.docs[index]['name']}");
+                  // 채팅 데이터들 안에 유저의 pk 값 존재함 => 회원정보에도 pk 값 존재 : 비교할 수 있음
+                  // 채팅 데이터 pk == 회원정보 pk => 회원정보 안의 이미지 url 을 받아와서 전달 가능 ?.?
+                  ? TestWdiget(
+                      name,
+                      snapshot.data?.docs[index]['name'],
+                      snapshot.data?.docs[index]['text'],
+                      pickedImage,
+                    )
+                  : TestWdiget(
+                      name,
+                      snapshot.data?.docs[index]['name'],
+                      snapshot.data?.docs[index]['text'],
+                      pickedImage,
+                    );
             },
           );
         });
@@ -294,29 +288,39 @@ class _SendMessageState extends State<SendMessage> {
   }
 }
 
-Widget TestWdiget(String? name, String? _name, String text, File? pickedImage,
-    String? imageUrl) {
+Widget TestWdiget(
+  String? name,
+  String? myName,
+  String? text,
+  File? pickedImage,
+) {
+  // var provider = UserProvider();
+  // provider.fetchAllData();
+  // print('${provider.userModel.profile}');
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Row(
       mainAxisAlignment:
-          name == _name ? MainAxisAlignment.end : MainAxisAlignment.start,
+          name == myName ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         CircleAvatar(
           backgroundColor: Colors.blue,
           // backgroundImage: pickedImage != null ? FileImage(pickedImage) : null,
-          child: imageUrl == '' ? SizedBox() : Image.network(imageUrl!),
+          // child: imageUrl == '' ? SizedBox() : Image.network(imageUrl!),
         ),
         const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              name!,
+              myName!,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             // txt에 들어있는 정보를 보여준다.
-            Text(text)
+            Text(
+              text!,
+              maxLines: 3,
+            )
           ],
         ),
       ],

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -19,6 +21,21 @@ class UserProvider with ChangeNotifier {
       print(value.data());
       _userModel = UserModel.fromJson(userData);
       notifyListeners();
+    });
+  }
+
+  fetchAllData() async {
+    await FirebaseFirestore.instance
+        .collection('회원정보')
+        .get()
+        .then((QuerySnapshot) {
+      for (var docSnapshot in QuerySnapshot.docs) {
+        // print('${docSnapshot.data()}');
+        dynamic userData = docSnapshot.data();
+        _userModel = UserModel.fromJson(userData);
+        print('######email ${_userModel.email}');
+        notifyListeners();
+      }
     });
   }
 }

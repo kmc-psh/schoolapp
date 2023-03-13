@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shcoolapp/%08widgets/chattingroom_item.dart';
+import 'package:shcoolapp/controller/user_controller.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/test.dart';
 
@@ -22,6 +24,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<UserProvider>(context);
     TextEditingController _textEditingController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
@@ -126,21 +129,28 @@ class _ChattingRoomState extends State<ChattingRoom> {
                           icon: const Icon(Icons.delete))
                     ],
                   ),
-                  onTap: () {
+                  onTap: () async {
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
                     //         builder: (context) =>
                     //             ChattingPage(name: widget.name, room: widget.room)));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChatMain(
-                                room: snapshot.data!.docs[index]['RoomName'],
-                                name: widget.name,
-                                test: snapshot.data!.docs[index]['name'],
-                                email: widget.email,
-                                pk: widget.pk)));
+
+                    // var provider = UserProvider();
+                    await provider.fetchUserData(widget.email);
+                    String imageUrl = "provider.userModel.image";
+                    if (mounted) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatMain(
+                                  room: snapshot.data!.docs[index]['RoomName'],
+                                  name: widget.name,
+                                  test: snapshot.data!.docs[index]['name'],
+                                  email: widget.email,
+                                  pk: widget.pk,
+                                  imageUrl: imageUrl)));
+                    }
                   },
                 );
               }),
