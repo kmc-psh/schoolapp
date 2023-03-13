@@ -47,6 +47,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Calendar',
             style: TextStyle(
                 fontFamily: 'salt', color: Colors.white, fontSize: 20)),
