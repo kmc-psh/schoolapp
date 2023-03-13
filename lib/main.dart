@@ -5,6 +5,7 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:shcoolapp/controller/kakao_controller.dart';
 import 'package:shcoolapp/controller/root_controller.dart';
+import 'package:shcoolapp/controller/user_controller.dart';
 import 'package:shcoolapp/page/addPostScreen.dart';
 import 'package:shcoolapp/page/authpage.dart';
 import 'package:shcoolapp/page/boardScreen.dart';
@@ -44,7 +45,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: ((context) => ChattingProvider()),
           ),
-          ChangeNotifierProvider(create: (context) => LoginProvider())
+          ChangeNotifierProvider(create: (context) => LoginProvider()),
+          ChangeNotifierProvider(create: (context) => UserProvider())
         ],
         child: const MaterialApp(
             // routes: {'/register': (context) => MainPage()},
