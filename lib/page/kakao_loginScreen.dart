@@ -31,9 +31,6 @@ class _KakaoLoginScreenState extends State<KakaoLoginScreen> {
             String? name = await provider.kakaoLogin();
             String email = provider.test;
             int pk = provider.pk;
-
-            await userProvider.fetchAllData();
-
             // 카카오 로그인때 이름 안넘어오면 에러문구 설정 해야함
             if (mounted) {
               provider.targetPage == TargetPage.main
