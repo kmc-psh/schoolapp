@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shcoolapp/%08widgets/chattingroom_item.dart';
 import 'package:shcoolapp/controller/user_controller.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
+import 'package:shcoolapp/test%20copy.dart';
 import 'package:shcoolapp/test.dart';
 
 class ChattingRoom extends StatefulWidget {
@@ -143,7 +144,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ChatMain(
+                              builder: (context) => ChatMainTest(
                                   room: snapshot.data!.docs[index]['RoomName'],
                                   name: widget.name,
                                   test: snapshot.data!.docs[index]['name'],
