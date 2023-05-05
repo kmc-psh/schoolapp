@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:shcoolapp/api/user_api.dart';
 import 'package:shcoolapp/model/user_model.dart';
-import 'package:shcoolapp/page/loginpage.dart';
 
 enum TargetPage { main, error }
 

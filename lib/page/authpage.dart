@@ -31,9 +31,9 @@ class _AuthWidgetState extends State<AuthWidget> {
   String userPassword = '';
 
   // 모든 텍스트폼필드를 작동시키기위해 currentstate에 의해서만 벨리데이트가 호출되므로 널값(!)표시해주기
-  void _tryValidation(){
+  void _tryValidation() {
     final isVaild = _formKey.currentState!.validate();
-    if(isVaild){
+    if (isVaild) {
       _formKey.currentState!.save();
     }
   }
@@ -75,8 +75,8 @@ class _AuthWidgetState extends State<AuthWidget> {
                 ),
                 ElevatedButton.icon(
                     onPressed: () {
-                      Provider.of<PageNotifier>(context, listen: false)
-                          .goToMain();
+                      // Provider.of<PageNotifier>(context, listen: false)
+                      //     .goToMain();
                     },
 
                     // 편의상 만든거고 나중에 삭제할 것!!
@@ -88,14 +88,14 @@ class _AuthWidgetState extends State<AuthWidget> {
             ),
             TextFormField(
               key: ValueKey(1),
-              validator: (value){
+              validator: (value) {
                 // !로 null값 허용
-                if (value!.isEmpty || !value.contains('@')){
+                if (value!.isEmpty || !value.contains('@')) {
                   return '너무 짧아요';
                 }
                 return null;
               },
-              onSaved: (value){
+              onSaved: (value) {
                 userEmail = value!;
               },
               cursorColor: Colors.black,
@@ -118,14 +118,14 @@ class _AuthWidgetState extends State<AuthWidget> {
             ),
             TextFormField(
               key: ValueKey(2),
-              validator: (value){
+              validator: (value) {
                 // !로 null값 허용
-                if (value!.isEmpty || value.length < 4){
+                if (value!.isEmpty || value.length < 4) {
                   return '5글자 이상으로 해주세요';
                 }
                 return null;
               },
-              onSaved: (value){
+              onSaved: (value) {
                 userID = value!;
               },
               cursorColor: Colors.black,
@@ -146,14 +146,14 @@ class _AuthWidgetState extends State<AuthWidget> {
             ),
             TextFormField(
               key: ValueKey(3),
-              validator: (value){
+              validator: (value) {
                 // !로 null값 허용
-                if (value!.isEmpty || value.length < 6){
+                if (value!.isEmpty || value.length < 6) {
                   return '7글자 이상으로 해주세요';
                 }
                 return null;
               },
-              onSaved: (value){
+              onSaved: (value) {
                 userPassword = value!;
               },
               cursorColor: Colors.black,
@@ -290,7 +290,7 @@ class _AuthWidgetState extends State<AuthWidget> {
             Align(
               alignment: Alignment.bottomRight,
               child: ElevatedButton.icon(
-                // 버튼에 학생증 인증 페이지로 넘어가는 기능과 _tryValidation();기능 같이 추가하기
+                  // 버튼에 학생증 인증 페이지로 넘어가는 기능과 _tryValidation();기능 같이 추가하기
                   onPressed: () {
                     // if (isVaild == null){
                     //   return Provider.of<PageNotifier>(context, listen: false)
@@ -299,9 +299,8 @@ class _AuthWidgetState extends State<AuthWidget> {
                     //   return _tryValidation();
                     // }
                     // _tryValidation();
-                    Provider.of<PageNotifier>(context, listen: false)
-                        .goToOtherPage('StudentPage');
-
+                    // Provider.of<PageNotifier>(context, listen: false)
+                    //     .goToOtherPage('StudentPage');
                   },
                   icon: Icon(
                     Icons.arrow_forward,
@@ -315,8 +314,5 @@ class _AuthWidgetState extends State<AuthWidget> {
       //     ),
       //   ),
     );
-
   }
-
-
 }

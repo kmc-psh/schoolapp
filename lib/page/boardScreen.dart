@@ -45,6 +45,7 @@ class _BoardScreenState extends State<BoardScreen> {
           style: TextStyle(fontFamily: 'salt', fontSize: 35),
         ),
         centerTitle: true,
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
       ),
       body: SingleChildScrollView(
         child: Column(

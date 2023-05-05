@@ -45,15 +45,15 @@ class _StudentWidgetState extends State<StudentWidget> {
         children: [
           Row(
             children: [
-              Text(
+              const Text(
                 "학생증 인증",
                 textScaleFactor: 3,
                 style: TextStyle(fontFamily: 'salt', color: Colors.white),
               ),
               ElevatedButton.icon(
                   onPressed: () {
-                    Provider.of<PageNotifier>(context, listen: false)
-                        .goToOtherPage('AuthPage');
+                    // Provider.of<PageNotifier>(context, listen: false)
+                    //     .goToOtherPage('AuthPage');
                   },
 
                   // 편의상 만든거고 나중에 삭제할 것!!
@@ -89,19 +89,16 @@ class _StudentWidgetState extends State<StudentWidget> {
                   child: Center(
                     child: _image == null
                         ? Text(
-                      '학생증 사진이 없어요 ㅠㅠ.',
-                      style: TextStyle(
-                          fontFamily: 'salt',
-                          color: Colors.black,
-                          fontSize: 30),
-                    )
+                            '학생증 사진이 없어요 ㅠㅠ.',
+                            style: TextStyle(
+                                fontFamily: 'salt',
+                                color: Colors.black,
+                                fontSize: 30),
+                          )
                         : Image.file(File(_image!.path)),
                   ),
                 ),
-                ElevatedButton(onPressed: (){
-
-                }, child: Text('전송'))
-
+                ElevatedButton(onPressed: () {}, child: Text('전송'))
               ],
             ),
           ),
