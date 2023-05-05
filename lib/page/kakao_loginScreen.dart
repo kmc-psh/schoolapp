@@ -22,29 +22,40 @@ class _KakaoLoginScreenState extends State<KakaoLoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-          onPressed: () async {
-            var provider = LoginProvider();
-            var userProvider = UserProvider();
-            String? name = await provider.kakaoLogin();
-            String email = provider.test;
-            int pk = provider.pk;
-            // 카카오 로그인때 이름 안넘어오면 에러문구 설정 해야함
-            if (mounted) {
-              provider.targetPage == TargetPage.main
-                  ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              MainPage(name: name, email: email, pk: pk)))
-                  : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Center(child: Text('카카오 로그인 오류 !'))));
-            }
-          },
-          child: Image.asset('assets/kakao.png'),
-        ),
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 500,
+          ),
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
+              onPressed: () async {
+                var provider = LoginProvider();
+                var userProvider = UserProvider();
+                String? name = await provider.kakaoLogin();
+                String email = provider.test;
+                int pk = provider.pk;
+
+                await userProvider.fetchAllData();
+
+                // 카카오 로그인때 이름 안넘어오면 에러문구 설정 해야함
+                if (mounted) {
+                  provider.targetPage == TargetPage.main
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MainPage(name: name, email: email, pk: pk)))
+                      : ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Center(child: Text('카카오 로그인 오류 !'))));
+                }
+              },
+              child: Image.asset('assets/kakao.png'),
+            ),
+          ),
+        ],
       ),
     );
   }

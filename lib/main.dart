@@ -13,7 +13,6 @@ import 'package:shcoolapp/page/calendarpage.dart';
 import 'package:shcoolapp/page/chatting_room.dart';
 import 'package:shcoolapp/page/chattingpage.dart';
 import 'package:shcoolapp/page/kakao_loginScreen.dart';
-import 'package:shcoolapp/page/loginpage.dart';
 import 'package:shcoolapp/page/mainpage.dart';
 import 'package:shcoolapp/page/registScreen.dart';
 import 'package:shcoolapp/page/studentIDpage.dart';
