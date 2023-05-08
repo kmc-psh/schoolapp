@@ -37,6 +37,32 @@ class _ResgisterScreenState extends State<ResgisterScreen> {
           padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
+              // 여기다가 api 추가해서 showDialog로 학교 띄운다음, 학교 누르면 필드에 보여주고
+              // showDialog안에서 텍스트 필드 만들어서 글자 일치할때마다 학교이름에서 일치하는만큼 파란색으로 보여주기
+              TextFormField(
+                onTap: () {
+                  showDialog(
+                      context: (context),
+                      builder: (_) {
+                        return AlertDialog(
+                          title: Text('hi'),
+                        );
+                      });
+                },
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    icon: const Icon(
+                      Icons.face_retouching_natural,
+                      color: Colors.blue,
+                    ),
+                    border: _border,
+                    focusedBorder: _border,
+                    hintText: '학교 검색',
+                    hintStyle: const TextStyle(color: Colors.blue)),
+              ),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: _nameTextController,
                 cursorColor: Colors.black,
